@@ -2,10 +2,72 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Mi primera página</title>
+  <title>Sorteo GPTRZ - Control Total</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
+    h1 { color: #333; }
+    .panel { margin: 20px auto; padding: 20px; background: #fff; width: 400px; border-radius: 8px; }
+    input { display: block; margin: 10px auto; padding: 8px; width: 90%; }
+    button { background: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+    button:hover { background: #0056b3; }
+    ul { text-align: left; }
+    .ganador { font-size: 20px; color: #d9534f; margin-top: 20px; }
+  </style>
 </head>
 <body>
-  <h1>Bienvenido a mi web 🎉</h1>
-  <p>Esta es mi primera página publicada con GitHub Pages.</p>
+  <h1>🎉 Sorteo GPTRZ 🎉</h1>
+  <p>Panel de control: agrega participantes y elige al ganador.</p>
+  
+  <div class="panel">
+    <input type="text" id="nombre" placeholder="Nombre del participante">
+    <button onclick="agregarParticipante()">➕ Agregar</button>
+    
+    <h3>📋 Lista de participantes</h3>
+    <ul id="participantes"></ul>
+    
+    <button onclick="elegirGanador()">🎯 Elegir ganador</button>
+    <button onclick="limpiarLista()">🗑️ Limpiar lista</button>
+    
+    <div class="ganador" id="ganador"></div>
+  </div>
+
+  <script>
+    const participantes = [];
+
+    function agregarParticipante() {
+      const nombre = document.getElementById("nombre").value.trim();
+      if(nombre) {
+        participantes.push(nombre);
+        actualizarLista();
+        document.getElementById("nombre").value = "";
+      }
+    }
+
+    function actualizarLista() {
+      const lista = document.getElementById("participantes");
+      lista.innerHTML = "";
+      participantes.forEach((p, i) => {
+        const li = document.createElement("li");
+        li.textContent = (i+1) + ". " + p;
+        lista.appendChild(li);
+      });
+    }
+
+    function elegirGanador() {
+      if(participantes.length === 0) {
+        document.getElementById("ganador").textContent = "No hay participantes aún.";
+        return;
+      }
+      const indice = Math.floor(Math.random() * participantes.length);
+      const ganador = participantes[indice];
+      document.getElementById("ganador").textContent = "🎉 El ganador es: " + ganador + " 🎉";
+    }
+
+    function limpiarLista() {
+      participantes.length = 0;
+      actualizarLista();
+      document.getElementById("ganador").textContent = "";
+    }
+  </script>
 </body>
 </html>
