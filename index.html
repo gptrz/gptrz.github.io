@@ -2,71 +2,95 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Sorteo GPTRZ - Control Total</title>
+  <title>Sorteo GPTRZ</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; }
-    h1 { color: #333; }
-    .panel { margin: 20px auto; padding: 20px; background: #fff; width: 400px; border-radius: 8px; }
-    input { display: block; margin: 10px auto; padding: 8px; width: 90%; }
-    button { background: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
-    button:hover { background: #0056b3; }
-    ul { text-align: left; }
-    .ganador { font-size: 20px; color: #d9534f; margin-top: 20px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #006400, #228B22);
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #004d00;
+      padding: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      color: gold;
+    }
+    section {
+      margin: 40px auto;
+      max-width: 600px;
+      background: rgba(0,0,0,0.3);
+      padding: 20px;
+      border-radius: 10px;
+    }
+    button {
+      background: gold;
+      color: #004d00;
+      padding: 12px 24px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #ffd700;
+    }
+    #resultado {
+      font-size: 22px;
+      margin-top: 20px;
+      font-weight: bold;
+      color: gold;
+    }
+    footer {
+      background-color: #004d00;
+      padding: 10px;
+      font-size: 14px;
+      color: #ccc;
+    }
   </style>
 </head>
 <body>
-  <h1>🎉 Sorteo GPTRZ 🎉</h1>
-  <p>Panel de control: agrega participantes y elige al ganador.</p>
-  
-  <div class="panel">
-    <input type="text" id="nombre" placeholder="Nombre del participante">
-    <button onclick="agregarParticipante()">➕ Agregar</button>
-    
-    <h3>📋 Lista de participantes</h3>
-    <ul id="participantes"></ul>
-    
-    <button onclick="elegirGanador()">🎯 Elegir ganador</button>
-    <button onclick="limpiarLista()">🗑️ Limpiar lista</button>
-    
-    <div class="ganador" id="ganador"></div>
-  </div>
+  <header>🎉 Sorteo GPTRZ 🎉</header>
+
+  <section>
+    <h2>Tu nombre puede ser el siguiente ganador</h2>
+    <p>Participa ahora para tener la oportunidad de ganar premios exclusivos.</p>
+    <button onclick="sortear()">Sortear</button>
+    <p id="resultado"></p>
+  </section>
+
+  <section>
+    <h3>Premio especial</h3>
+    <p>Un premio sorpresa para el ganador del mes.</p>
+    <p><strong>Participantes:</strong> <span id="contador">0</span></p>
+    <p><strong>Fecha del sorteo:</strong> 25 Mayo 2026</p>
+  </section>
+
+  <footer>© 2026 GPTRZ. Todos los derechos reservados.</footer>
 
   <script>
-    const participantes = [];
+    let nombres = [];
 
-    function agregarParticipante() {
-      const nombre = document.getElementById("nombre").value.trim();
-      if(nombre) {
-        participantes.push(nombre);
-        actualizarLista();
-        document.getElementById("nombre").value = "";
-      }
-    }
-
-    function actualizarLista() {
-      const lista = document.getElementById("participantes");
-      lista.innerHTML = "";
-      participantes.forEach((p, i) => {
-        const li = document.createElement("li");
-        li.textContent = (i+1) + ". " + p;
-        lista.appendChild(li);
+    // Cargar el archivo TXT
+    fetch('nombres.txt')
+      .then(response => response.text())
+      .then(texto => {
+        nombres = texto.split('\n').map(n => n.trim()).filter(n => n.length > 0);
+        document.getElementById('contador').textContent = nombres.length;
       });
-    }
 
-    function elegirGanador() {
-      if(participantes.length === 0) {
-        document.getElementById("ganador").textContent = "No hay participantes aún.";
+    // Función para sortear
+    function sortear() {
+      if (nombres.length === 0) {
+        document.getElementById('resultado').textContent = "No hay nombres cargados.";
         return;
       }
-      const indice = Math.floor(Math.random() * participantes.length);
-      const ganador = participantes[indice];
-      document.getElementById("ganador").textContent = "🎉 El ganador es: " + ganador + " 🎉";
-    }
-
-    function limpiarLista() {
-      participantes.length = 0;
-      actualizarLista();
-      document.getElementById("ganador").textContent = "";
+      const ganador = nombres[Math.floor(Math.random() * nombres.length)];
+      document.getElementById('resultado').textContent = "🎊 El ganador es: " + ganador + " 🎊";
     }
   </script>
 </body>
