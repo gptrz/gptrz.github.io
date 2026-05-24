@@ -2,29 +2,50 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Sorteo GPTRZ</title>
+  <title>SORTEO COMUNITARIO GPTRZ</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #006400, #228B22);
+      background: #013220;
       color: #fff;
-      text-align: center;
       margin: 0;
       padding: 0;
     }
     header {
-      background-color: #004d00;
+      background: #004d00;
       padding: 20px;
+      text-align: center;
       font-size: 28px;
       font-weight: bold;
       color: gold;
     }
+    nav {
+      background: #025e25;
+      padding: 10px;
+      text-align: center;
+    }
+    nav a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
     section {
       margin: 40px auto;
-      max-width: 600px;
+      max-width: 700px;
       background: rgba(0,0,0,0.3);
       padding: 20px;
       border-radius: 10px;
+    }
+    h2, h3 {
+      color: gold;
+    }
+    input {
+      padding: 10px;
+      width: 80%;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: none;
     }
     button {
       background: gold;
@@ -46,28 +67,47 @@
       color: gold;
     }
     footer {
-      background-color: #004d00;
+      background: #004d00;
       padding: 10px;
+      text-align: center;
       font-size: 14px;
       color: #ccc;
     }
   </style>
 </head>
 <body>
-  <header>🎉 Sorteo GPTRZ 🎉</header>
+  <header>SORTEO COMUNITARIO GPTRZ</header>
+  <nav>
+    <a href="#">Inicio</a>
+    <a href="#">Cómo funciona</a>
+    <a href="#">Participantes</a>
+    <a href="#">Ganadores</a>
+    <a href="#">Preguntas</a>
+  </nav>
 
   <section>
     <h2>Tu nombre puede ser el siguiente ganador</h2>
-    <p>Participa ahora para tener la oportunidad de ganar premios exclusivos.</p>
-    <button onclick="sortear()">Sortear</button>
-    <p id="resultado"></p>
+    <p>Participa en nuestro sorteo y gana increíbles premios. Es fácil, rápido y justo para todos.</p>
+    <input type="text" id="nombre" placeholder="Escribe tu nombre completo">
+    <br>
+    <button onclick="participar()">Participar</button>
+    <p><strong>Participantes:</strong> <span id="contador">0</span></p>
+    <p><strong>Cierre de inscripciones:</strong> 25 Mayo 2026 · 23:59</p>
+    <p><strong>Próximo sorteo:</strong> 26 Mayo 2026 · Transmisión en vivo</p>
   </section>
 
   <section>
-    <h3>Premio especial</h3>
-    <p>Un premio sorpresa para el ganador del mes.</p>
-    <p><strong>Participantes:</strong> <span id="contador">0</span></p>
-    <p><strong>Fecha del sorteo:</strong> 25 Mayo 2026</p>
+    <h3>Cómo funciona</h3>
+    <ol>
+      <li>Inscríbete: escribe tu nombre en el formulario.</li>
+      <li>Sorteamos: el sistema elige al azar.</li>
+      <li>¡Tenemos ganador!: se anuncia con un mensaje especial.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h3>Último sorteo</h3>
+    <p id="resultado">Aún no se ha realizado el sorteo.</p>
   </section>
 
   <footer>© 2026 GPTRZ. Todos los derechos reservados.</footer>
@@ -75,7 +115,7 @@
   <script>
     let nombres = [];
 
-    // Cargar el archivo TXT
+    // Cargar archivo TXT
     fetch('nombres.txt')
       .then(response => response.text())
       .then(texto => {
@@ -83,10 +123,21 @@
         document.getElementById('contador').textContent = nombres.length;
       });
 
+    // Función para inscribir nombre
+    function participar() {
+      const nombre = document.getElementById('nombre').value.trim();
+      if (nombre) {
+        nombres.push(nombre);
+        document.getElementById('contador').textContent = nombres.length;
+        document.getElementById('nombre').value = "";
+        alert("¡Inscripción exitosa!");
+      }
+    }
+
     // Función para sortear
     function sortear() {
       if (nombres.length === 0) {
-        document.getElementById('resultado').textContent = "No hay nombres cargados.";
+        document.getElementById('resultado').textContent = "No hay participantes.";
         return;
       }
       const ganador = nombres[Math.floor(Math.random() * nombres.length)];
