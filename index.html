@@ -11,7 +11,7 @@
     .container { display: flex; }
     .form-panel {
       width: 25%; background: #ecf0f1; padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-      display: flex; flex-direction: column; justify-content: flex-start;
+      display: flex; flex-direction: column;
     }
     .form-panel h2 { margin-top: 0; color: #2c3e50; }
     .form-panel input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; }
@@ -29,16 +29,21 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     .historial button {
-      background: #e74c3c; color: white; border: none; border-radius: 4px;
-      padding: 6px 10px; cursor: pointer; font-size: 14px;
+      margin-left: 5px;
+      border: none; border-radius: 4px; padding: 6px 10px; cursor: pointer; font-size: 14px;
     }
-    .historial button:hover { background: #c0392b; }
+    .btn-borrar { background: #e74c3c; color: white; }
+    .btn-borrar:hover { background: #c0392b; }
+    .btn-ver { background: #27ae60; color: white; }
+    .btn-ver:hover { background: #219150; }
     .dashboard { flex: 1; padding: 20px; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
     th { background: #34495e; color: white; }
     tr:nth-child(even) { background: #f9f9f9; }
     .chart-container { margin-top: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .btn-ganada { background: #27ae60; color: white; border: none; border-radius: 4px; padding: 6px 10px; cursor: pointer; }
+    .btn-perdida { background: #e74c3c; color: white; border: none; border-radius: 4px; padding: 6px 10px; cursor: pointer; }
     footer {
       background: #27ae60; color: white; text-align: center;
       padding: 12px; font-weight: bold; position: relative; bottom: 0; width: 100%;
@@ -85,26 +90,33 @@
   <script>
     let historial = [];
     let grafico;
+    let resultados = [];
 
     function calcular() {
       const capitalInicial = parseFloat(document.getElementById('capital').value);
       const porcentaje = parseFloat(document.getElementById('porcentaje').value) / 100;
       const niveles = parseInt(document.getElementById('niveles').value);
       
-      let tabla = "<table><tr><th>Nivel</th><th>Capital</th><th>Ganancia</th><th>Total</th></tr>";
+      let tabla = "<table><tr><th>Nivel</th><th>Capital</th><th>Ganancia</th><th>Total</th><th>Resultado</th></tr>";
       let capital = capitalInicial;
       let datosCapital = [];
       let datosGanancia = [];
       let etiquetas = [];
+      resultados = [];
 
       for (let i = 1; i <= niveles; i++) {
         let ganancia = capital * porcentaje;
         let total = capital + ganancia;
-        tabla += `<tr><td>${i}</td><td>${capital.toFixed(2)}</td><td>${ganancia.toFixed(2)}</td><td>${total.toFixed(2)}</td></tr>`;
+        tabla += `<tr><td>${i}</td><td>${capital.toFixed(2)}</td><td>${ganancia.toFixed(2)}</td><td>${total.toFixed(2)}</td>
+                  <td>
+                    <button class='btn-ganada' onclick='marcarResultado(${i},"ganada")'>Ganada</button>
+                    <button class='btn-perdida' onclick='marcarResultado(${i},"perdida")'>Perdida</button>
+                  </td></tr>`;
         capital = total;
         etiquetas.push("Nivel " + i);
         datosCapital.push(total.toFixed(2));
         datosGanancia.push(ganancia.toFixed(2));
+        resultados.push({nivel:i, total:total, estado:null});
       }
       
       tabla += "</table>";
@@ -112,7 +124,7 @@
       actualizarGrafico(etiquetas, datosCapital, datosGanancia);
       
       const fecha = new Date().toLocaleString();
-      const registro = { texto: `${fecha} — Capital: ${capitalInicial}, %: ${(porcentaje*100).toFixed(2)}, Niveles: ${niveles}` };
+      const registro = { texto: `${fecha} — Capital: ${capitalInicial}, %: ${(porcentaje*100).toFixed(2)}, Niveles: ${niveles}`, capitalInicial, porcentaje, niveles };
       historial.push(registro);
       actualizarHistorial();
     }
@@ -143,37 +155,4 @@
               fill: true,
               tension: 0.3,
               pointRadius: 5,
-              pointBackgroundColor: '#2980b9'
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: { beginAtZero: true }
-          }
-        }
-      });
-    }
-
-    function actualizarHistorial() {
-      const lista = document.getElementById('listaHistorial');
-      lista.innerHTML = "";
-      historial.forEach((item, index) => {
-        const li = document.createElement('li');
-        li.textContent = item.texto;
-        const btn = document.createElement('button');
-        btn.textContent = "Borrar";
-        btn.onclick = () => borrarHistorial(index);
-        li.appendChild(btn);
-        lista.appendChild(li);
-      });
-    }
-
-    function borrarHistorial(index) {
-      historial.splice(index, 1);
-      actualizarHistorial();
-    }
-  </script>
-</body>
-</html>
+              pointBackgroundColor
