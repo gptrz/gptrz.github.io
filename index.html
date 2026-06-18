@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+OCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -86,7 +86,7 @@
         let ganancia = capital * porcentaje;
         let total = capital + ganancia;
         tabla += `<tr><td>${i}</td><td>${capital.toFixed(2)}</td><td>${ganancia.toFixed(2)}</td><td>${total.toFixed(2)}</td>
-                  <td>
+                  <td id="resultado-${i}">
                     <button class='btn-ganada' onclick='marcarResultado(${i},"ganada")'>Ganada</button>
                     <button class='btn-perdida' onclick='marcarResultado(${i},"perdida")'>Perdida</button>
                   </td></tr>`;
@@ -180,14 +180,25 @@
       if (resultado) {
         resultado.estado = estado;
       }
+
+      // Buscar la celda correspondiente en la tabla
+      const celda = document.getElementById(`resultado-${nivel}`);
+      const fecha = new Date().toLocaleString();
+      if (estado === "ganada") {
+        celda.innerHTML = `<span style="color:green;font-weight:bold;">✔ Ganada (${fecha})</span>`;
+      } else {
+        celda.innerHTML = `<span style="color:red;font-weight:bold;">✘ Perdida (${fecha})</span>`;
+      }
+
       // Actualizar colores en el gráfico según estado
       grafico.data.datasets[0].pointBackgroundColor = resultados.map(r => {
         if (r.estado === "ganada") return "#27ae60"; // verde
         if (r.estado === "perdida") return "#e74c3c"; // rojo
         return "#27ae60"; // por defecto verde
       });
+
       grafico.update();
     }
   </script>
 </body>
-</html>
+</html><!D
