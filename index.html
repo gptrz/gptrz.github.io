@@ -2,36 +2,79 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Interés Compuesto GPTRZ</title>
+  <title>Dashboard Interés Compuesto GPTRZ</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin-top: 40px; }
-    h1 { color: darkgreen; }
-    input, button { padding: 10px; margin: 5px; font-size: 16px; }
-    table { margin: 20px auto; border-collapse: collapse; width: 80%; }
-    th, td { border: 1px solid #ccc; padding: 8px; }
-    th { background: #f0f0f0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; margin: 0; }
+    header { background: #2c3e50; color: white; padding: 20px; text-align: center; }
+    h1 { margin: 0; }
+    .container { display: flex; }
+    .form-panel {
+      width: 25%; background: #ecf0f1; padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    .form-panel h2 { margin-top: 0; }
+    .form-panel input { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
+    .form-panel button {
+      width: 100%; padding: 10px; background: #27ae60; color: white; border: none; border-radius: 4px;
+      font-size: 16px; cursor: pointer;
+    }
+    .form-panel button:hover { background: #219150; }
+    .dashboard {
+      flex: 1; padding: 20px;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+    th { background: #34495e; color: white; }
+    tr:nth-child(even) { background: #f9f9f9; }
+    .historial { margin-top: 30px; }
+    .historial h3 { margin-bottom: 10px; }
+    .historial ul { list-style: none; padding: 0; }
+    .historial li { background: #dfe6e9; margin: 5px 0; padding: 8px; border-radius: 4px; }
   </style>
 </head>
 <body>
-  <h1>📈 Calculadora de Interés Compuesto GPTRZ</h1>
+  <header>
+    <h1>📊 Dashboard Interés Compuesto GPTRZ</h1>
+  </header>
   
-  <p>Capital inicial: <input type="number" id="capital" value="100"></p>
-  <p>Porcentaje (%): <input type="number" id="porcentaje" value="5"></p>
-  <p>Períodos: <input type="number" id="periodos" value="12"></p>
-  <p>Niveles: <input type="number" id="niveles" value="1"></p>
-  
-  <button onclick="calcular()">Calcular</button>
-  
-  <div id="resultado"></div>
+  <div class="container">
+    <div class="form-panel">
+      <h2>Parámetros</h2>
+      <label>Capital inicial:</label>
+      <input type="number" id="capital" value="100">
+      
+      <label>Porcentaje (%):</label>
+      <input type="number" id="porcentaje" value="5">
+      
+      <label>Períodos:</label>
+      <input type="number" id="periodos" value="12">
+      
+      <label>Niveles:</label>
+      <input type="number" id="niveles" value="1">
+      
+      <button onclick="calcular()">Calcular</button>
+    </div>
+    
+    <div class="dashboard">
+      <h2>Resultados</h2>
+      <div id="resultado"></div>
+      
+      <div class="historial">
+        <h3>Historial de cálculos</h3>
+        <ul id="listaHistorial"></ul>
+      </div>
+    </div>
+  </div>
   
   <script>
+    let historial = [];
+    
     function calcular() {
       const capital = parseFloat(document.getElementById('capital').value);
       const porcentaje = parseFloat(document.getElementById('porcentaje').value) / 100;
       const periodos = parseInt(document.getElementById('periodos').value);
       const niveles = parseInt(document.getElementById('niveles').value);
       
-      let tabla = "<table><tr><th>Nivel</th><th>Capital</th><th>Ganancia</th><th>Total</th></tr>";
+      let tabla = "<table><tr><th>Nivel</th><th>Capital Base</th><th>Ganancia</th><th>Total</th></tr>";
       let acumulado = capital;
       
       for (let i = 1; i <= periodos; i++) {
@@ -45,7 +88,24 @@
       
       tabla += "</table>";
       document.getElementById('resultado').innerHTML = tabla;
+      
+      // Guardar en historial
+      const registro = `Capital: ${capital}, %: ${(porcentaje*100).toFixed(2)}, Períodos: ${periodos}, Niveles: ${niveles}`;
+      historial.push(registro);
+      actualizarHistorial();
+    }
+    
+    function actualizarHistorial() {
+      const lista = document.getElementById('listaHistorial');
+      lista.innerHTML = "";
+      historial.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        lista.appendChild(li);
+      });
     }
   </script>
 </body>
 </html>
+ <footer>© 2026 GPTRZ. Todos los derechos reservados.</footer>
+ 
