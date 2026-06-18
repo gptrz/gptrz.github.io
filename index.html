@@ -1,8 +1,7 @@
-OCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard Interés Compuesto GPTRZ</title>
+  <title> Interés Compuesto GPTRZ</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; margin: 0; }
@@ -102,7 +101,13 @@ OCTYPE html>
       actualizarGrafico(etiquetas, datosCapital, datosGanancia);
       
       const fecha = new Date().toLocaleString();
-      const registro = { texto: `${fecha} — Capital: ${capitalInicial}, %: ${(porcentaje*100).toFixed(2)}, Niveles: ${niveles}`, capitalInicial, porcentaje, niveles };
+      const registro = { 
+        texto: `${fecha} — Capital: ${capitalInicial}, %: ${(porcentaje*100).toFixed(2)}, Niveles: ${niveles}`, 
+        capitalInicial, 
+        porcentaje, 
+        niveles,
+        resultados: JSON.parse(JSON.stringify(resultados)) // guardamos copia con estados
+      };
       historial.push(registro);
       actualizarHistorial();
     }
@@ -173,9 +178,17 @@ OCTYPE html>
       document.getElementById('porcentaje').value = (item.porcentaje * 100).toFixed(2);
       document.getElementById('niveles').value = item.niveles;
       calcular();
+
+      // Restaurar estados guardados
+      resultados = JSON.parse(JSON.stringify(item.resultados));
+      resultados.forEach(r => {
+        if (r.estado) {
+          marcarResultado(r.nivel, r.estado, true); // true = restaurando
+        }
+      });
     }
 
-    function marcarResultado(nivel, estado) {
+    function marcarResultado(nivel, estado, restaurando=false) {
       const resultado = resultados.find(r => r.nivel === nivel);
       if (resultado) {
         resultado.estado = estado;
@@ -198,7 +211,15 @@ OCTYPE html>
       });
 
       grafico.update();
+
+      // Si no estamos restaurando, actualizar también el historial con estados
+      if (!restaurando) {
+        const ultimo = historial[historial.length - 1];
+        if (ultimo) {
+          ultimo.resultados = JSON.parse(JSON.stringify(resultados));
+        }
+      }
     }
   </script>
 </body>
-</html><!D
+</html>
