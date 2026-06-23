@@ -48,13 +48,18 @@
       border-radius: 6px;
       cursor: pointer;
       transition: background 0.3s;
+      width: 60px;
+      height: 60px;
     }
-    .cell.marked { background: #00ff88; color: #000; }
-    .timer {
+    .cell.correct { background: #00ff88; color: #000; }
+    .cell.wrong { background: #ff4444; }
+    .timer, .target, .stats {
       font-size: 18px;
-      margin-top: 15px;
-      color: #ffdd00;
+      margin-top: 10px;
     }
+    .timer { color: #ffdd00; }
+    .target { color: #00ff88; }
+    .stats { color: #00aaff; }
   </style>
 </head>
 <body>
@@ -65,10 +70,18 @@
     <button onclick="startGame()">Iniciar</button>
   </div>
   <div class="timer" id="timer">Tiempo restante: 0</div>
+  <div class="target" id="target">Número objetivo: -</div>
+  <div class="stats" id="stats">Aciertos: 0 | Errores: 0</div>
   <div class="grid" id="grid"></div>
 
+  <!-- Sonidos -->
+  <audio id="soundError" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+  <audio id="soundCorrect" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+  <audio id="soundEnd" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"></audio>
+
   <script>
-    let countdown;
+    let countdown, currentTarget, remaining, aciertos, errores;
+
     function startGame() {
       const size = parseInt(document.getElementById('size').value);
       const time = parseInt(document.getElementById('time').value);
@@ -85,24 +98,56 @@
         const cell = document.createElement('div');
         cell.className = 'cell';
         cell.textContent = num;
-        cell.onclick = () => cell.classList.toggle('marked');
+        cell.onclick = () => checkNumber(cell, num);
         grid.appendChild(cell);
       });
 
-      // Temporizador regresivo
+      // Inicializar juego
+      currentTarget = 1;
+      aciertos = 0;
+      errores = 0;
+      document.getElementById('target').textContent = `Número objetivo: ${currentTarget}`;
+      document.getElementById('stats').textContent = `Aciertos: ${aciertos} | Errores: ${errores}`;
       clearInterval(countdown);
-      let remaining = time;
+      remaining = time;
       document.getElementById('timer').textContent = `Tiempo restante: ${remaining}`;
       countdown = setInterval(() => {
         remaining--;
         document.getElementById('timer').textContent = `Tiempo restante: ${remaining}`;
         if (remaining <= 0) {
           clearInterval(countdown);
-          alert("¡Tiempo terminado!");
+          document.getElementById('soundEnd').play();
+          alert(`¡Tiempo terminado! Aciertos: ${aciertos}, Errores: ${errores}`);
         }
       }, 1000);
+    }
+
+    function checkNumber(cell, num) {
+      if (num === currentTarget) {
+        cell.classList.add('correct');
+        document.getElementById('soundCorrect').play();
+        aciertos++;
+        currentTarget++;
+        document.getElementById('stats').textContent = `Aciertos: ${aciertos} | Errores: ${errores}`;
+        if (currentTarget > document.querySelectorAll('.cell').length) {
+          clearInterval(countdown);
+          document.getElementById('soundEnd').play();
+          alert(`¡Has completado la tabla! Aciertos: ${aciertos}, Errores: ${errores}`);
+        } else {
+          document.getElementById('target').textContent = `Número objetivo: ${currentTarget}`;
+        }
+      } else {
+        cell.classList.add('wrong');
+        errores++;
+        remaining -= 5;
+        if (remaining < 0) remaining = 0;
+        document.getElementById('timer').textContent = `Tiempo restante: ${remaining}`;
+        document.getElementById('stats').textContent = `Aciertos: ${aciertos} | Errores: ${errores}`;
+        document.getElementById('soundError').play();
+      }
     }
   </script>
 </body>
 </html>
+
 
