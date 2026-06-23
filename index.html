@@ -1,4 +1,95 @@
-<div class="menu">
-  <a href="interescompuesto/" class="card">INTERÉS COMPUESTO</a>
-  <a href="schulte/" class="card">TABLA DE SCHULTE</a>
-</div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio GPTRZ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 40px;
+      background: linear-gradient(90deg, #00ff88, #00c6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+    .login-box {
+      background: #111;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00ff88;
+      text-align: center;
+      width: 300px;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+      text-align: center;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #00aaff;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover { background: #0077cc; }
+    .error {
+      color: #ff4444;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    footer {
+      background:#00aa00;
+      color:#fff;
+      text-align:center;
+      padding:10px;
+      margin-top:30px;
+      width:100%;
+      font-weight:bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bienvenido a GPTRZ</h1>
+  <div class="login-box">
+    <p>Ingrese su clave para continuar</p>
+    <input type="password" id="clave" placeholder="Clave de acceso">
+    <button onclick="verificarClave()">Entrar</button>
+    <div class="error" id="error"></div>
+  </div>
+
+  <footer>
+    © 2026 GPTRZ — Todos los derechos reservados
+  </footer>
+
+  <script>
+    function verificarClave() {
+      const clave = document.getElementById('clave').value;
+      const error = document.getElementById('error');
+      if (clave === "kaiser77") { // 🔑 Tu clave personalizada
+        window.location.href = "schulte/index.html"; // Redirige al juego
+      } else {
+        error.textContent = "Clave incorrecta. Intente nuevamente.";
+      }
+    }
+  </script>
+</body>
+</html>
