@@ -17,9 +17,7 @@
       padding-top: 30px;
     }
     h1 { color: #00ff88; margin-bottom: 10px; }
-    .controls {
-      margin-bottom: 20px;
-    }
+    .controls { margin-bottom: 20px; }
     input, button {
       padding: 8px;
       margin: 5px;
@@ -33,45 +31,38 @@
       cursor: pointer;
     }
     button:hover { background: #0077cc; }
+
+    /* Temporizador circular con puntitos */
     .timer-container {
       position: relative;
-      width: 120px;
-      height: 120px;
+      width: 160px;
+      height: 160px;
       margin: 20px 0;
     }
-    .circle {
-      width: 120px;
-      height: 120px;
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #00ff88;
       border-radius: 50%;
-      border: 8px solid #444;
       position: absolute;
-      top: 0;
-      left: 0;
-      box-shadow: 0 0 15px #00aaff;
+      transform-origin: 72px 72px;
+      transition: background 0.3s;
     }
-    .circle-progress {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 8px solid #00ff88;
-      position: absolute;
-      top: 0;
-      left: 0;
-      clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%);
-      transform: rotate(0deg);
-      transition: transform 1s linear, border-color 0.3s;
-    }
+    .dot.off { background: #333; }
     .timer-text {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 28px;
+      font-size: 36px;
       font-weight: bold;
-      color: #ffdd00;
+      background: linear-gradient(90deg, #00ff88, #00c6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: color 0.5s, background 0.5s;
     }
     .target {
-      font-size: 22px;
+      font-size: 24px;
       margin: 10px 0;
       color: #00ff88;
     }
@@ -102,18 +93,16 @@
   <h1>Tabla de Schulte GPTRZ</h1>
   <div class="controls">
     <label>Tamaño (n × n): <input type="number" id="size" value="4" min="3" max="10"></label>
-    <label>Tiempo (segundos): <input type="number" id="time" value="60" min="10"></label>
+    <label>Tiempo (segundos): <input type="number" id="time" value="30" min="10"></label>
     <button onclick="startGame()">Iniciar</button>
   </div>
 
   <!-- Temporizador circular -->
-  <div class="timer-container">
-    <div class="circle"></div>
-    <div class="circle-progress" id="circleProgress"></div>
+  <div class="timer-container" id="timerContainer">
     <div class="timer-text" id="timer">0</div>
   </div>
 
-  <div class="target" id="target">Número objetivo: -</div>
+  <div class="target" id="target">Objetivo: -</div>
   <div class="grid" id="grid"></div>
 
   <!-- Sonidos -->
@@ -123,6 +112,18 @@
 
   <script>
     let countdown, currentTarget, remaining, totalTime;
+
+    function createDots(total) {
+      const container = document.getElementById('timerContainer');
+      [...container.querySelectorAll('.dot')].forEach(d => d.remove());
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        const angle = (i / total) * 360;
+        dot.style.transform = `rotate(${angle}deg) translate(72px)`;
+        container.appendChild(dot);
+      }
+    }
 
     function startGame() {
       const size = parseInt(document.getElementById('size').value);
@@ -146,9 +147,10 @@
 
       // Inicializar juego
       currentTarget = 1;
-      document.getElementById('target').textContent = `Número objetivo: ${currentTarget}`;
+      document.getElementById('target').textContent = `Objetivo: ${currentTarget}`;
       clearInterval(countdown);
       remaining = totalTime;
+      createDots(totalTime);
       updateTimerUI();
       countdown = setInterval(() => {
         remaining--;
@@ -171,7 +173,7 @@
           playSound('soundEnd');
           alert("¡Has completado la tabla!");
         } else {
-          document.getElementById('target').textContent = `Número objetivo: ${currentTarget}`;
+          document.getElementById('target').textContent = `Objetivo: ${currentTarget}`;
         }
       } else {
         cell.classList.add('wrong');
@@ -184,24 +186,32 @@
 
     function updateTimerUI() {
       document.getElementById('timer').textContent = remaining;
-      const circle = document.getElementById('circleProgress');
-      const angle = (remaining / totalTime) * 360;
-      circle.style.transform = `rotate(${angle}deg)`;
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, i) => {
+        if (i >= remaining) {
+          dot.classList.add('off');
+        } else {
+          dot.classList.remove('off');
+        }
+      });
 
-      // Cambiar color según tiempo restante
+      // Cambiar color del número central según tiempo
       const ratio = remaining / totalTime;
+      const timerText = document.getElementById('timer');
       if (ratio > 0.6) {
-        circle.style.borderColor = "#00ff88"; // verde
+        timerText.style.background = "linear-gradient(90deg, #00ff88, #00c6ff)";
       } else if (ratio > 0.3) {
-        circle.style.borderColor = "#ffdd00"; // amarillo
+        timerText.style.background = "linear-gradient(90deg, #ffdd00, #ffaa00)";
       } else {
-        circle.style.borderColor = "#ff4444"; // rojo
+        timerText.style.background = "linear-gradient(90deg, #ff4444, #ff0000)";
       }
+      timerText.style.webkitBackgroundClip = "text";
+      timerText.style.webkitTextFillColor = "transparent";
     }
 
     function playSound(id) {
       const sound = document.getElementById(id);
-      sound.currentTime = 0; // reinicia para sonar inmediato
+      sound.currentTime = 0;
       sound.play();
     }
   </script>
