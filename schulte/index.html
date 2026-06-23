@@ -59,7 +59,7 @@
       background: linear-gradient(90deg, #00ff88, #00c6ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      transition: color 0.5s, background 0.5s;
+      transition: background 0.5s;
     }
     .target {
       font-size: 24px;
@@ -87,6 +87,12 @@
     }
     .cell.correct { background: #00ff88; color: #000; }
     .cell.wrong { background: #ff4444; }
+    .result {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #ffdd00;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -104,14 +110,16 @@
 
   <div class="target" id="target">Objetivo: -</div>
   <div class="grid" id="grid"></div>
+  <div class="result" id="result"></div>
 
   <!-- Sonidos -->
   <audio id="soundError" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
   <audio id="soundCorrect" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
   <audio id="soundEnd" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
+  <audio id="soundTick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
 
   <script>
-    let countdown, currentTarget, remaining, totalTime;
+    let countdown, currentTarget, remaining, totalTime, totalObjectives, aciertos, errores;
 
     function createDots(total) {
       const container = document.getElementById('timerContainer');
@@ -128,13 +136,14 @@
     function startGame() {
       const size = parseInt(document.getElementById('size').value);
       totalTime = parseInt(document.getElementById('time').value);
+      totalObjectives = size * size;
       const grid = document.getElementById('grid');
       grid.innerHTML = '';
       grid.style.gridTemplateColumns = `repeat(${size}, 60px)`;
       grid.style.gridTemplateRows = `repeat(${size}, 60px)`;
 
       // Generar números aleatorios
-      let numbers = Array.from({length: size*size}, (_, i) => i+1);
+      let numbers = Array.from({length: totalObjectives}, (_, i) => i+1);
       numbers.sort(() => Math.random() - 0.5);
 
       numbers.forEach(num => {
@@ -147,7 +156,9 @@
 
       // Inicializar juego
       currentTarget = 1;
-      document.getElementById('target').textContent = `Objetivo: ${currentTarget}`;
+      aciertos = 0;
+      errores = 0;
+      document.getElementById('target').textContent = `Objetivo: ${currentTarget} de ${totalObjectives}`;
       clearInterval(countdown);
       remaining = totalTime;
       createDots(totalTime);
@@ -155,10 +166,11 @@
       countdown = setInterval(() => {
         remaining--;
         updateTimerUI();
+        playTick();
         if (remaining <= 0) {
           clearInterval(countdown);
           playSound('soundEnd');
-          alert("¡Tiempo terminado!");
+          showResults(false);
         }
       }, 1000);
     }
@@ -167,16 +179,126 @@
       if (num === currentTarget) {
         cell.classList.add('correct');
         playSound('soundCorrect');
+        aciertos++;
         currentTarget++;
-        if (currentTarget > document.querySelectorAll('.cell').length) {
+        if (currentTarget > totalObjectives) {
           clearInterval(countdown);
           playSound('soundEnd');
-          alert("¡Has completado la tabla!");
+          showResults(true);
         } else {
-          document.getElementById('target').textContent = `Objetivo: ${currentTarget}`;
+          document.getElementById('target').textContent = `Objetivo: ${currentTarget} de ${totalObjectives}`;
         }
       } else {
         cell.classList.add('wrong');
+        errores++;
+        remaining -= 5;
+        if (remaining < 0) remaining = 0;
+        updateTimerUI();
+        playSound('soundError');
+      }
+    }
+
+    function updateTimerUI() {
+      document.getElementById('timer').textContent = remaining;
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, i) => {
+        if (i >= remaining) {
+          dot.classList.add('off');
+        } else {
+          dot.classList.remove('off');
+        }
+      });
+
+      // Cambiar color del número central según tiempo
+      const ratio = remaining / totalTime;
+      const timerText = document.getElementById('timer');
+      if (ratio > 0.6) {
+        timerText.style.background = "linear-gradient(90deg, #00ff88, #00c6ff)";
+      } else if (ratio > 0.3) {
+        timerText.style.background = "linear-gradient(90deg, #ffdd00, #ffaa00)";
+      } else {
+        timerText.style.background = "linear-gradient(90deg, #ff4444, #ff0000)";
+      }
+      timerText.style.webkitBackgroundClip = "text";
+  <!-- Sonidos -->
+  <audio id="soundError" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
+  <audio id="soundCorrect" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
+  <audio id="soundEnd" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
+  <audio id="soundTick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+
+  <script>
+    let countdown, currentTarget, remaining, totalTime, totalObjectives, aciertos, errores;
+
+    function createDots(total) {
+      const container = document.getElementById('timerContainer');
+      [...container.querySelectorAll('.dot')].forEach(d => d.remove());
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        const angle = (i / total) * 360;
+        dot.style.transform = `rotate(${angle}deg) translate(72px)`;
+        container.appendChild(dot);
+      }
+    }
+
+    function startGame() {
+      const size = parseInt(document.getElementById('size').value);
+      totalTime = parseInt(document.getElementById('time').value);
+      totalObjectives = size * size;
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      grid.style.gridTemplateColumns = `repeat(${size}, 60px)`;
+      grid.style.gridTemplateRows = `repeat(${size}, 60px)`;
+
+      // Generar números aleatorios
+      let numbers = Array.from({length: totalObjectives}, (_, i) => i+1);
+      numbers.sort(() => Math.random() - 0.5);
+
+      numbers.forEach(num => {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.textContent = num;
+        cell.onclick = () => checkNumber(cell, num);
+        grid.appendChild(cell);
+      });
+
+      // Inicializar juego
+      currentTarget = 1;
+      aciertos = 0;
+      errores = 0;
+      document.getElementById('target').textContent = `Objetivo: ${currentTarget} de ${totalObjectives}`;
+      clearInterval(countdown);
+      remaining = totalTime;
+      createDots(totalTime);
+      updateTimerUI();
+      countdown = setInterval(() => {
+        remaining--;
+        updateTimerUI();
+        playTick();
+        if (remaining <= 0) {
+          clearInterval(countdown);
+          playSound('soundEnd');
+          showResults(false);
+        }
+      }, 1000);
+    }
+
+    function checkNumber(cell, num) {
+      if (num === currentTarget) {
+        cell.classList.add('correct');
+        playSound('soundCorrect');
+        aciertos++;
+        currentTarget++;
+        if (currentTarget > totalObjectives) {
+          clearInterval(countdown);
+          playSound('soundEnd');
+          showResults(true);
+        } else {
+          document.getElementById('target').textContent = `Objetivo: ${currentTarget} de ${totalObjectives}`;
+        }
+      } else {
+        cell.classList.add('wrong');
+        errores++;
         remaining -= 5;
         if (remaining < 0) remaining = 0;
         updateTimerUI();
@@ -214,6 +336,35 @@
       sound.currentTime = 0;
       sound.play();
     }
+
+    function playTick() {
+      const tick = document.getElementById('soundTick');
+      tick.currentTime = 0;
+      // Normal cada segundo
+      if (remaining > 5) {
+        tick.play();
+      } else if (remaining > 0) {
+        // Últimos 5 segundos → más rápido
+        tick.play();
+        setTimeout(() => { tick.currentTime = 0; tick.play(); }, 300);
+      }
+    }
+
+    function showResults(completed) {
+      const result = document.getElementById('result');
+      if (completed) {
+        const tiempoSobrante = remaining;
+        result.innerHTML = `<strong style="color:#00ff88;">¡Felicidades!</strong><br>
+          Completaste todos los ${totalObjectives} objetivos.<br>
+          Tiempo sobrante: ${tiempoSobrante} segundos.<br>
+          Errores cometidos: ${errores}`;
+      } else {
+        result.innerHTML = `<strong style="color:#ff4444;">Tiempo terminado</strong><br>
+          Lograste ${aciertos} de ${totalObjectives} objetivos.<br>
+          Errores cometidos: ${errores}`;
+      }
+    }
   </script>
 </body>
 </html>
+
