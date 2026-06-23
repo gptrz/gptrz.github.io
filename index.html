@@ -56,11 +56,33 @@
       margin-top: 10px;
       font-size: 14px;
     }
+
+    /* Panel de opciones */
     .panel {
       display: none;
       margin-top: 30px;
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+    }
+
+    /* Título animado */
+    .titulo-panel {
+      font-size: 32px;
+      font-weight: bold;
+      color: #00ff88;
+      text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88;
+      animation: brillo 2s infinite alternate;
+    }
+    @keyframes brillo {
+      from { text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88; }
+      to { text-shadow: 0 0 25px #00ff88, 0 0 40px #00ff88; }
+    }
+
+    .cards {
       display: flex;
       gap: 20px;
+      margin-top: 10px;
     }
     .card {
       background: #111;
@@ -82,9 +104,10 @@
       margin-bottom: 15px;
     }
     .card img {
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       margin-bottom: 10px;
+      border-radius: 10px;
     }
     footer {
       background:#00aa00;
@@ -108,17 +131,20 @@
 
   <!-- Panel de opciones -->
   <div class="panel" id="panelOpciones">
-    <div class="card">
-      <img src="https://cdn-icons-png.flaticon.com/512/2331/2331948.png" alt="Interés compuesto">
-      <h2>INTERÉS COMPUESTO</h2>
-      <p>Calculadora interactiva para visualizar el crecimiento de tu capital con interés compuesto.</p>
-      <button onclick="window.location.href='interescompuesto/index.html'">Entrar</button>
-    </div>
-    <div class="card">
-      <img src="https://cdn-icons-png.flaticon.com/512/992/992700.png" alt="Tabla de Schulte">
-      <h2>TABLA DE SCHULTE</h2>
-      <p>Entrenamiento visual y de concentración para mejorar tu velocidad de análisis en trading.</p>
-      <button onclick="window.location.href='schulte/index.html'">Entrar</button>
+    <div class="titulo-panel">Opciones disponibles</div>
+    <div class="cards">
+      <div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/2331/2331948.png" alt="Interés compuesto">
+        <h2>INTERÉS COMPUESTO</h2>
+        <p>Calculadora interactiva para visualizar el crecimiento de tu capital con interés compuesto.</p>
+        <button onclick="window.location.href='interescompuesto/index.html'">Entrar</button>
+      </div>
+      <div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/992/992700.png" alt="Tabla de Schulte">
+        <h2>TABLA DE SCHULTE</h2>
+        <p>Entrenamiento visual y de concentración para mejorar tu velocidad de análisis en trading.</p>
+        <button onclick="window.location.href='schulte/index.html'">Entrar</button>
+      </div>
     </div>
   </div>
 
@@ -130,7 +156,7 @@
     function verificarClave() {
       const clave = document.getElementById('clave').value;
       const error = document.getElementById('error');
-      if (clave === "kaiser77") { // 🔑 Tu clave personalizada
+      if (clave === "kaiser77") {
         document.getElementById('loginBox').style.display = "none";
         document.getElementById('panelOpciones').style.display = "flex";
       } else {
