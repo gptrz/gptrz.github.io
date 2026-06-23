@@ -1,0 +1,225 @@
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title> Interés Compuesto GPTRZ</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; margin: 0; }
+    header { background: linear-gradient(90deg, #2c3e50, #34495e); color: white; padding: 20px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    h1 { margin: 0; letter-spacing: 1px; }
+    .container { display: flex; }
+    .form-panel { width: 25%; background: #ecf0f1; padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+    .form-panel h2 { margin-top: 0; color: #2c3e50; }
+    .form-panel input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; }
+    .form-panel button { width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+    .form-panel button:hover { background: #219150; }
+    .historial { margin-top: 20px; }
+    .historial h3 { margin-bottom: 10px; color: #2c3e50; }
+    .historial ul { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; }
+    .historial li { background: #dfe6e9; margin: 8px 0; padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .historial button { margin-left: 5px; border: none; border-radius: 4px; padding: 6px 10px; cursor: pointer; font-size: 14px; }
+    .btn-borrar { background: #e74c3c; color: white; }
+    .btn-borrar:hover { background: #c0392b; }
+    .btn-ver { background: #27ae60; color: white; }
+    .btn-ver:hover { background: #219150; }
+    .dashboard { flex: 1; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
+    th { background: #34495e; color: white; }
+    tr:nth-child(even) { background: #f9f9f9; }
+    .chart-container { margin-top: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .btn-ganada { background: #27ae60; color: white; border: none; border-radius: 4px; padding: 6px 10px; cursor: pointer; }
+    .btn-perdida { background: #e74c3c; color: white; border: none; border-radius: 4px; padding: 6px 10px; cursor: pointer; }
+    footer { background: #27ae60; color: white; text-align: center; padding: 12px; font-weight: bold; position: relative; bottom: 0; width: 100%; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📊 Dashboard Interés Compuesto GPTRZ</h1>
+  </header>
+  
+  <div class="container">
+    <div class="form-panel">
+      <h2>Parámetros</h2>
+      <label>Capital inicial:</label>
+      <input type="number" id="capital" value="100">
+      <label>Porcentaje (%):</label>
+      <input type="number" id="porcentaje" value="85">
+      <label>Niveles:</label>
+      <input type="number" id="niveles" value="6">
+      <button onclick="calcular()">Calcular</button>
+      <div class="historial">
+        <h3>Historial de cálculos</h3>
+        <ul id="listaHistorial"></ul>
+      </div>
+    </div>
+    
+    <div class="dashboard">
+      <h2>Resultados</h2>
+      <div id="resultado"></div>
+      <div class="chart-container">
+        <canvas id="grafico"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2026 GPTRZ — Todos los derechos reservados</footer>
+  <script>
+    let historial = [];
+    let grafico;
+    let resultados = [];
+
+    function calcular() {
+      const capitalInicial = parseFloat(document.getElementById('capital').value);
+      const porcentaje = parseFloat(document.getElementById('porcentaje').value) / 100;
+      const niveles = parseInt(document.getElementById('niveles').value);
+      
+      let tabla = "<table><tr><th>Nivel</th><th>Capital</th><th>Ganancia</th><th>Total</th><th>Resultado</th></tr>";
+      let capital = capitalInicial;
+      let datosCapital = [];
+      let datosGanancia = [];
+      let etiquetas = [];
+      resultados = [];
+
+      for (let i = 1; i <= niveles; i++) {
+        let ganancia = capital * porcentaje;
+        let total = capital + ganancia;
+        tabla += `<tr><td>${i}</td><td>${capital.toFixed(2)}</td><td>${ganancia.toFixed(2)}</td><td>${total.toFixed(2)}</td>
+                  <td id="resultado-${i}">
+                    <button class='btn-ganada' onclick='marcarResultado(${i},"ganada")'>Ganada</button>
+                    <button class='btn-perdida' onclick='marcarResultado(${i},"perdida")'>Perdida</button>
+                  </td></tr>`;
+        capital = total;
+        etiquetas.push("Nivel " + i);
+        datosCapital.push(total.toFixed(2));
+        datosGanancia.push(ganancia.toFixed(2));
+        resultados.push({nivel:i, total:total, estado:null});
+      }
+      
+      tabla += "</table>";
+      document.getElementById('resultado').innerHTML = tabla;
+      actualizarGrafico(etiquetas, datosCapital, datosGanancia);
+      
+      const fecha = new Date().toLocaleString();
+      const registro = { 
+        texto: `${fecha} — Capital: ${capitalInicial}, %: ${(porcentaje*100).toFixed(2)}, Niveles: ${niveles}`, 
+        capitalInicial, 
+        porcentaje, 
+        niveles,
+        resultados: JSON.parse(JSON.stringify(resultados)) // guardamos copia con estados
+      };
+      historial.push(registro);
+      actualizarHistorial();
+    }
+
+    function actualizarGrafico(etiquetas, datosCapital, datosGanancia) {
+      const ctx = document.getElementById('grafico').getContext('2d');
+      if (grafico) grafico.destroy();
+      grafico = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: etiquetas,
+          datasets: [
+            {
+              label: 'Capital Total',
+              data: datosCapital,
+              borderColor: '#27ae60',
+              backgroundColor: 'rgba(39,174,96,0.2)',
+              fill: true,
+              tension: 0.3,
+              pointRadius: 5,
+              pointBackgroundColor: '#27ae60'
+            },
+            {
+              label: 'Ganancia Acumulada',
+              data: datosGanancia,
+              borderColor: '#2980b9',
+              backgroundColor: 'rgba(41,128,185,0.2)',
+              fill: true,
+              tension: 0.3,
+              pointRadius: 5,
+              pointBackgroundColor: '#2980b9'
+            }
+          ]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+    }
+    function actualizarHistorial() {
+      const lista = document.getElementById('listaHistorial');
+      lista.innerHTML = "";
+      historial.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.textContent = item.texto;
+
+        const btnVer = document.createElement('button');
+        btnVer.textContent = "Ver";
+        btnVer.className = "btn-ver";
+        btnVer.onclick = () => cargarHistorial(item);
+
+        const btnBorrar = document.createElement('button');
+        btnBorrar.textContent = "Borrar";
+        btnBorrar.className = "btn-borrar";
+        btnBorrar.onclick = () => borrarHistorial(index);
+
+        li.appendChild(btnVer);
+        li.appendChild(btnBorrar);
+        lista.appendChild(li);
+      });
+    }
+
+    function borrarHistorial(index) {
+      historial.splice(index, 1);
+      actualizarHistorial();
+    }
+
+    function cargarHistorial(item) {
+      document.getElementById('capital').value = item.capitalInicial;
+      document.getElementById('porcentaje').value = (item.porcentaje * 100).toFixed(2);
+      document.getElementById('niveles').value = item.niveles;
+      calcular();
+
+      // Restaurar estados guardados
+      resultados = JSON.parse(JSON.stringify(item.resultados));
+      resultados.forEach(r => {
+        if (r.estado) {
+          marcarResultado(r.nivel, r.estado, true); // true = restaurando
+        }
+      });
+    }
+
+    function marcarResultado(nivel, estado, restaurando=false) {
+      const resultado = resultados.find(r => r.nivel === nivel);
+      if (resultado) {
+        resultado.estado = estado;
+      }
+
+      // Buscar la celda correspondiente en la tabla
+      const celda = document.getElementById(`resultado-${nivel}`);
+      const fecha = new Date().toLocaleString();
+      if (estado === "ganada") {
+        celda.innerHTML = `<span style="color:green;font-weight:bold;">✔ Ganada (${fecha})</span>`;
+      } else {
+        celda.innerHTML = `<span style="color:red;font-weight:bold;">✘ Perdida (${fecha})</span>`;
+      }
+
+      // Actualizar colores en el gráfico según estado
+      grafico.data.datasets[0].pointBackgroundColor = resultados.map(r => {
+        if (r.estado === "ganada") return "#27ae60"; // verde
+        if (r.estado === "perdida") return "#e74c3c"; // rojo
+        return "#27ae60"; // por defecto verde
+      });
+
+      grafico.update();
+
+      // Si no estamos restaurando, actualizar también el historial con estados
+      if (!restaurando) {
+        const ultimo = historial[historial.length - 1];
+        if (ultimo) {
+          ultimo.resultados = JSON.parse(JSON.stringify(resultados));
+        }
+      }
+    }
+  </script>
+</body>
+</html>
