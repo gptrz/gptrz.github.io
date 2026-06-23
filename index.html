@@ -109,39 +109,34 @@
   <!-- Panel de opciones -->
   <div class="panel" id="panelOpciones">
     <div class="card">
-      <img src="
+      <img src="https://cdn-icons-png.flaticon.com/512/2331/2331948.png" alt="Interés compuesto">
+      <h2>INTERÉS COMPUESTO</h2>
+      <p>Calculadora interactiva para visualizar el crecimiento de tu capital con interés compuesto.</p>
+      <button onclick="window.location.href='interescompuesto/index.html'">Entrar</button>
+    </div>
+    <div class="card">
+      <img src="https://cdn-icons-png.flaticon.com/512/992/992700.png" alt="Tabla de Schulte">
+      <h2>TABLA DE SCHULTE</h2>
+      <p>Entrenamiento visual y de concentración para mejorar tu velocidad de análisis en trading.</p>
+      <button onclick="window.location.href='schulte/index.html'">Entrar</button>
+    </div>
+  </div>
 
-" alt="Interés compuesto">
-<h2>INTERÉS COMPUESTO</h2>
-<p>Calculadora interactiva para visualizar el crecimiento de tu capital con interés compuesto.</p>
-<button onclick="window.location.href='interescompuesto/index.html'">Entrar</button>
-</div>
-<div class="card">
-<img src="
+  <footer>
+    © 2026 GPTRZ — Todos los derechos reservados
+  </footer>
 
-
-" alt="Tabla de Schulte">
-<h2>TABLA DE SCHULTE</h2>
-<p>Entrenamiento visual y de concentración para mejorar tu velocidad de análisis en trading.</p>
-<button onclick="window.location.href='schulte/index.html'">Entrar</button>
-</div>
-</div>
-
-<footer>
-© 2026 GPTRZ — Todos los derechos reservados
-</footer>
-
-<script>
-function verificarClave() {
-const clave = document.getElementById('clave').value;
-const error = document.getElementById('error');
-if (clave === "kaiser77") { // 🔑 Tu clave personalizada
-document.getElementById('loginBox').style.display = "none";
-document.getElementById('panelOpciones').style.display = "flex";
-} else {
-error.textContent = "Clave incorrecta. Intente nuevamente.";
-}
-}
-</script>
+  <script>
+    function verificarClave() {
+      const clave = document.getElementById('clave').value;
+      const error = document.getElementById('error');
+      if (clave === "kaiser77") { // 🔑 Tu clave personalizada
+        document.getElementById('loginBox').style.display = "none";
+        document.getElementById('panelOpciones').style.display = "flex";
+      } else {
+        error.textContent = "Clave incorrecta. Intente nuevamente.";
+      }
+    }
+  </script>
 </body>
 </html>
