@@ -136,9 +136,9 @@
 <body>
   <h1>GESTIÓN DE RIESGO GPTRZ</h1>
   <div class="tabs">
-    <div class="tab active" onclick="cambiarTab(this)">GENERAL</div>
-    <div class="tab" onclick="cambiarTab(this)">EXNOVA</div>
-    <div class="tab" onclick="cambiarTab(this)">IQ OPTION</div>
+    <div class="tab active" onclick="cambiarTab(this, 'general')">GENERAL</div>
+    <div class="tab" onclick="cambiarTab(this, 'exnova')">EXNOVA</div>
+    <div class="tab" onclick="cambiarTab(this, 'iqoption')">IQ OPTION</div>
   </div>
 
   <div class="contenedor">
@@ -171,9 +171,14 @@
 
   <a href="../index.html" class="volver">← VOLVER AL INICIO</a>
   <script>
-    function cambiarTab(tab) {
+    let pestañaActiva = "general"; // por defecto
+
+    function cambiarTab(tab, nombre) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
+      pestañaActiva = nombre;
+      mostrarDias();
+      document.getElementById("historial").innerHTML = "";
     }
 
     function guardarDia() {
@@ -191,15 +196,17 @@
         captura: captura ? URL.createObjectURL(captura) : null
       };
 
-      let historial = JSON.parse(localStorage.getItem("historial")) || {};
+      let clave = "historial_" + pestañaActiva;
+      let historial = JSON.parse(localStorage.getItem(clave)) || {};
       historial[dia] = historial[dia] || [];
       historial[dia].push(registro);
-      localStorage.setItem("historial", JSON.stringify(historial));
+      localStorage.setItem(clave, JSON.stringify(historial));
       mostrarDias();
     }
 
     function mostrarDias() {
-      let historial = JSON.parse(localStorage.getItem("historial")) || {};
+      let clave = "historial_" + pestañaActiva;
+      let historial = JSON.parse(localStorage.getItem(clave)) || {};
       let contenedor = document.getElementById("dias");
       contenedor.innerHTML = "";
       for (let i = 1; i <= 30; i++) {
@@ -216,7 +223,8 @@
     }
 
     function mostrarHistorial(dia) {
-      let historial = JSON.parse(localStorage.getItem("historial")) || {};
+      let clave = "historial_" + pestañaActiva;
+      let historial = JSON.parse(localStorage.getItem(clave)) || {};
       let contenedor = document.getElementById("historial");
       contenedor.innerHTML = "";
       if (!historial[dia]) {
@@ -237,13 +245,15 @@
     }
 
     function limpiarHistorial() {
-      localStorage.removeItem("historial");
+      let clave = "historial_" + pestañaActiva;
+      localStorage.removeItem(clave);
       mostrarDias();
       document.getElementById("historial").innerHTML = "";
     }
 
     function exportarCSV() {
-      let historial = JSON.parse(localStorage.getItem("historial")) || {};
+      let clave = "historial_" + pestañaActiva;
+      let historial = JSON.parse(localStorage.getItem(clave)) || {};
       let csv = "Día,Fecha,Par,Tipo,Resultado,Estrategia,Comentario\n";
       for (let dia in historial) {
         historial[dia].forEach(reg => {
@@ -254,7 +264,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "gestion_riesgo.csv";
+      a.download = "gestion_riesgo_" + pestañaActiva + ".csv";
       a.click();
     }
 
