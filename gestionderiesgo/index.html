@@ -2,30 +2,59 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Gestión de Riesgo - GPTRZ</title>
+  <title>Gestión de Riesgo GPTRZ</title>
   <style>
     body {
-      background-color: #0a0a0a;
+      background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
       color: #00ffcc;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
       text-align: center;
     }
-    .contenedor {
-      max-width: 800px;
-      margin: 40px auto;
+    h1 {
+      font-size: 32px;
+      color: #00ffcc;
+      text-shadow: 0 0 15px #00ffcc;
+      margin-top: 20px;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      gap: 10px;
+    }
+    .tab {
       background: #111;
-      padding: 20px;
-      border-radius: 10px;
+      border: 2px solid #00ffcc;
+      color: #00ffcc;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .tab.active {
+      background: #00ffcc;
+      color: #000;
       box-shadow: 0 0 15px #00ffcc;
     }
-    input, textarea {
+    .contenedor {
+      max-width: 900px;
+      margin: 20px auto;
+      background: #121212;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00ffcc;
+    }
+    input, select, textarea {
       width: 90%;
       padding: 10px;
-      margin: 10px 0;
+      margin: 8px 0;
       border: none;
-      border-radius: 5px;
-      background: #222;
+      border-radius: 6px;
+      background: #1e1e1e;
       color: #fff;
+      font-size: 14px;
     }
     button {
       background: #00aaff;
@@ -33,19 +62,53 @@
       border: none;
       padding: 10px 20px;
       margin: 10px;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      transition: 0.3s;
     }
     button:hover {
       background: #00ffcc;
       color: #000;
+      box-shadow: 0 0 10px #00ffcc;
+    }
+    .dias {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 25px;
+    }
+    .dia {
+      background: #1a1a1a;
+      border: 2px solid #00ffcc;
+      color: #00ffcc;
+      width: 60px;
+      height: 60px;
+      margin: 8px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      animation: pulso 2s infinite alternate;
+    }
+    .dia:hover {
+      background: #00ffcc;
+      color: #000;
+      transform: scale(1.1);
+    }
+    @keyframes pulso {
+      from { box-shadow: 0 0 5px #00ffcc; }
+      to { box-shadow: 0 0 20px #00c6ff; }
     }
     .registro {
-      background: #222;
+      background: #1e1e1e;
       margin: 15px 0;
       padding: 15px;
       border-radius: 8px;
       text-align: left;
+      box-shadow: 0 0 10px #00ffcc;
     }
     img {
       max-width: 200px;
@@ -53,78 +116,149 @@
       border: 2px solid #00ffcc;
       border-radius: 5px;
     }
+    .volver {
+      margin-top: 30px;
+      display: inline-block;
+      color: #00ffcc;
+      text-decoration: none;
+      font-weight: bold;
+      border: 2px solid #00ffcc;
+      padding: 8px 20px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .volver:hover {
+      background: #00ffcc;
+      color: #000;
+    }
   </style>
 </head>
 <body>
-  <h1>Gestión de Riesgo</h1>
+  <h1>GESTIÓN DE RIESGO GPTRZ</h1>
+  <div class="tabs">
+    <div class="tab active" onclick="cambiarTab(this)">GENERAL</div>
+    <div class="tab" onclick="cambiarTab(this)">EXNOVA</div>
+    <div class="tab" onclick="cambiarTab(this)">IQ OPTION</div>
+  </div>
+
   <div class="contenedor">
     <h3>Registrar Operación</h3>
-    <input id="capital" type="number" placeholder="Capital total ($)">
-    <input id="riesgo" type="number" placeholder="Riesgo máximo (%)">
-    <input id="resultado" type="text" placeholder="Resultado (ej: 3-1)">
-    <textarea id="observaciones" placeholder="Escribe qué falló o qué salió bien"></textarea>
+    <input id="fecha" type="date">
+    <select id="par">
+      <option>EUR/USD</option>
+      <option>GBP/JPY</option>
+      <option>USD/JPY</option>
+      <option>OTC</option>
+    </select>
+    <select id="tipo">
+      <option>CALL</option>
+      <option>PUT</option>
+    </select>
+    <input id="resultado" type="text" placeholder="Resultado (ej: +1 / -1)">
+    <input id="estrategia" type="text" placeholder="Estrategia usada (ej: 3 Velas)">
+    <textarea id="comentario" placeholder="Comentario o análisis del día"></textarea>
     <input id="captura" type="file" accept="image/*">
-    <button onclick="guardarRegistro()">Guardar</button>
+    <button onclick="guardarDia()">Guardar Día</button>
+    <button onclick="exportarCSV()">Exportar CSV</button>
     <button onclick="limpiarHistorial()">Borrar Todo</button>
-    <h3>Historial</h3>
+
+    <h3>Días Operados</h3>
+    <div class="dias" id="dias"></div>
+
+    <h3>Historial del Día</h3>
     <div id="historial"></div>
   </div>
 
+  <a href="../index.html" class="volver">← VOLVER AL INICIO</a>
   <script>
-    function guardarRegistro() {
-      const capital = document.getElementById("capital").value;
-      const riesgo = document.getElementById("riesgo").value;
+    function cambiarTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    }
+
+    function guardarDia() {
+      const fecha = document.getElementById("fecha").value;
+      const par = document.getElementById("par").value;
+      const tipo = document.getElementById("tipo").value;
       const resultado = document.getElementById("resultado").value;
-      const observaciones = document.getElementById("observaciones").value;
+      const estrategia = document.getElementById("estrategia").value;
+      const comentario = document.getElementById("comentario").value;
       const captura = document.getElementById("captura").files[0];
-      const fecha = new Date().toLocaleDateString();
+      const dia = new Date().getDate();
 
       let registro = {
-        fecha,
-        capital,
-        riesgo,
-        resultado,
-        observaciones,
+        fecha, par, tipo, resultado, estrategia, comentario,
         captura: captura ? URL.createObjectURL(captura) : null
       };
 
-      let historial = JSON.parse(localStorage.getItem("historial")) || [];
-      historial.push(registro);
+      let historial = JSON.parse(localStorage.getItem("historial")) || {};
+      historial[dia] = historial[dia] || [];
+      historial[dia].push(registro);
       localStorage.setItem("historial", JSON.stringify(historial));
-      mostrarHistorial();
+      mostrarDias();
     }
 
-    function mostrarHistorial() {
-      let historial = JSON.parse(localStorage.getItem("historial")) || [];
+    function mostrarDias() {
+      let historial = JSON.parse(localStorage.getItem("historial")) || {};
+      let contenedor = document.getElementById("dias");
+      contenedor.innerHTML = "";
+      for (let i = 1; i <= 30; i++) {
+        const diaDiv = document.createElement("div");
+        diaDiv.className = "dia";
+        diaDiv.textContent = i;
+        if (historial[i]) {
+          diaDiv.style.background = "#00ffcc";
+          diaDiv.style.color = "#000";
+        }
+        diaDiv.onclick = () => mostrarHistorial(i);
+        contenedor.appendChild(diaDiv);
+      }
+    }
+
+    function mostrarHistorial(dia) {
+      let historial = JSON.parse(localStorage.getItem("historial")) || {};
       let contenedor = document.getElementById("historial");
       contenedor.innerHTML = "";
-      historial.forEach((reg, i) => {
+      if (!historial[dia]) {
+        contenedor.innerHTML = "<p>No hay registros para este día.</p>";
+        return;
+      }
+      historial[dia].forEach((reg, i) => {
         contenedor.innerHTML += `
           <div class="registro">
             <strong>${reg.fecha}</strong><br>
-            Capital: $${reg.capital} | Riesgo: ${reg.riesgo}%<br>
-            Resultado: ${reg.resultado}<br>
-            Observaciones: ${reg.observaciones}<br>
+            Par: ${reg.par} | Tipo: ${reg.tipo} | Resultado: ${reg.resultado}<br>
+            Estrategia: ${reg.estrategia}<br>
+            Comentario: ${reg.comentario}<br>
             ${reg.captura ? `<img src="${reg.captura}" alt="Captura">` : ""}
-            <br><button onclick="borrarRegistro(${i})">Borrar</button>
           </div>
         `;
       });
     }
 
-    function borrarRegistro(i) {
-      let historial = JSON.parse(localStorage.getItem("historial")) || [];
-      historial.splice(i, 1);
-      localStorage.setItem("historial", JSON.stringify(historial));
-      mostrarHistorial();
-    }
-
     function limpiarHistorial() {
       localStorage.removeItem("historial");
-      mostrarHistorial();
+      mostrarDias();
+      document.getElementById("historial").innerHTML = "";
     }
 
-    window.onload = mostrarHistorial;
+    function exportarCSV() {
+      let historial = JSON.parse(localStorage.getItem("historial")) || {};
+      let csv = "Día,Fecha,Par,Tipo,Resultado,Estrategia,Comentario\n";
+      for (let dia in historial) {
+        historial[dia].forEach(reg => {
+          csv += `${dia},${reg.fecha},${reg.par},${reg.tipo},${reg.resultado},${reg.estrategia},${reg.comentario}\n`;
+        });
+      }
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "gestion_riesgo.csv";
+      a.click();
+    }
+
+    window.onload = mostrarDias;
   </script>
 </body>
 </html>
