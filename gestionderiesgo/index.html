@@ -5,7 +5,7 @@
   <title>Gestión de Riesgo GPTRZ</title>
   <style>
     body {
-      background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+      background: #0a0a0a;
       color: #00ffcc;
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
@@ -39,7 +39,7 @@
       box-shadow: 0 0 15px #00ffcc;
     }
     .contenedor {
-      max-width: 900px;
+      max-width: 950px;
       margin: 20px auto;
       background: #121212;
       padding: 25px;
@@ -91,16 +91,11 @@
       font-weight: bold;
       cursor: pointer;
       transition: 0.3s;
-      animation: pulso 2s infinite alternate;
     }
     .dia:hover {
       background: #00ffcc;
       color: #000;
       transform: scale(1.1);
-    }
-    @keyframes pulso {
-      from { box-shadow: 0 0 5px #00ffcc; }
-      to { box-shadow: 0 0 20px #00c6ff; }
     }
     .registro {
       background: #1e1e1e;
@@ -110,11 +105,20 @@
       text-align: left;
       box-shadow: 0 0 10px #00ffcc;
     }
-    img {
-      max-width: 200px;
-      margin-top: 10px;
-      border: 2px solid #00ffcc;
-      border-radius: 5px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #00ffcc;
+      padding: 8px;
+      text-align: center;
+      color: #fff;
+    }
+    th {
+      background: #00ffcc;
+      color: #000;
     }
     .volver {
       margin-top: 30px;
@@ -141,32 +145,70 @@
     <div class="tab" onclick="cambiarTab(this, 'iqoption')">IQ OPTION</div>
   </div>
 
-  <div class="contenedor">
-    <h3>Registrar Operación</h3>
-    <input id="fecha" type="date">
-    <select id="par">
+  <!-- Sección GENERAL -->
+  <div class="contenedor" id="general">
+    <h3>Configuraciones Generales</h3>
+    <input id="capitalGeneral" type="number" placeholder="Capital inicial ($)">
+    <input id="riesgoGeneral" type="number" placeholder="% Riesgo máximo">
+    <p id="perdidaMax"></p>
+  </div>
+
+  <!-- Sección EXNOVA -->
+  <div class="contenedor" id="exnova" style="display:none;">
+    <h3>Registrar Operación - EXNOVA</h3>
+    <input id="fechaExnova" type="date">
+    <select id="parExnova">
       <option>EUR/USD</option>
       <option>GBP/JPY</option>
       <option>USD/JPY</option>
       <option>OTC</option>
     </select>
-    <select id="tipo">
+    <select id="tipoExnova">
       <option>CALL</option>
       <option>PUT</option>
     </select>
-    <input id="resultado" type="text" placeholder="Resultado (ej: +1 / -1)">
-    <input id="estrategia" type="text" placeholder="Estrategia usada (ej: 3 Velas)">
-    <textarea id="comentario" placeholder="Comentario o análisis del día"></textarea>
-    <input id="captura" type="file" accept="image/*">
-    <button onclick="guardarDia()">Guardar Día</button>
-    <button onclick="exportarCSV()">Exportar CSV</button>
-    <button onclick="limpiarHistorial()">Borrar Todo</button>
+    <input id="resultadoExnova" type="text" placeholder="Resultado (ej: +1 / -1)">
+    <input id="estrategiaExnova" type="text" placeholder="Estrategia usada">
+    <textarea id="comentarioExnova" placeholder="Comentario"></textarea>
+    <input id="capturaExnova" type="file" accept="image/*">
+    <button onclick="guardarDia('exnova')">Guardar Día</button>
+    <button onclick="exportarCSV('exnova')">Exportar CSV</button>
+    <button onclick="limpiarHistorial('exnova')">Borrar Todo</button>
 
     <h3>Días Operados</h3>
-    <div class="dias" id="dias"></div>
+    <div class="dias" id="diasExnova"></div>
 
     <h3>Historial del Día</h3>
-    <div id="historial"></div>
+    <div id="historialExnova"></div>
+  </div>
+
+  <!-- Sección IQ OPTION -->
+  <div class="contenedor" id="iqoption" style="display:none;">
+    <h3>Registrar Operación - IQ OPTION</h3>
+    <input id="fechaIq" type="date">
+    <select id="parIq">
+      <option>EUR/USD</option>
+      <option>GBP/JPY</option>
+      <option>USD/JPY</option>
+      <option>OTC</option>
+    </select>
+    <select id="tipoIq">
+      <option>CALL</option>
+      <option>PUT</option>
+    </select>
+    <input id="resultadoIq" type="text" placeholder="Resultado (ej: +1 / -1)">
+    <input id="estrategiaIq" type="text" placeholder="Estrategia usada">
+    <textarea id="comentarioIq" placeholder="Comentario"></textarea>
+    <input id="capturaIq" type="file" accept="image/*">
+    <button onclick="guardarDia('iqoption')">Guardar Día</button>
+    <button onclick="exportarCSV('iqoption')">Exportar CSV</button>
+    <button onclick="limpiarHistorial('iqoption')">Borrar Todo</button>
+
+    <h3>Días Operados</h3>
+    <div class="dias" id="diasIq"></div>
+
+    <h3>Historial del Día</h3>
+    <div id="historialIq"></div>
   </div>
 
   <a href="../index.html" class="volver">← VOLVER AL INICIO</a>
@@ -177,18 +219,39 @@
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       pestañaActiva = nombre;
-      mostrarDias();
-      document.getElementById("historial").innerHTML = "";
+
+      // Mostrar solo la sección activa
+      document.querySelectorAll('.contenedor').forEach(c => c.style.display = "none");
+      document.getElementById(nombre).style.display = "block";
+
+      if (nombre === "general") {
+        calcularPerdida();
+      } else {
+        mostrarDias(nombre);
+        document.getElementById("historial" + capitalizar(nombre)).innerHTML = "";
+      }
     }
 
-    function guardarDia() {
-      const fecha = document.getElementById("fecha").value;
-      const par = document.getElementById("par").value;
-      const tipo = document.getElementById("tipo").value;
-      const resultado = document.getElementById("resultado").value;
-      const estrategia = document.getElementById("estrategia").value;
-      const comentario = document.getElementById("comentario").value;
-      const captura = document.getElementById("captura").files[0];
+    function calcularPerdida() {
+      const capital = document.getElementById("capitalGeneral").value;
+      const riesgo = document.getElementById("riesgoGeneral").value;
+      if (capital && riesgo) {
+        const perdida = (capital * riesgo) / 100;
+        document.getElementById("perdidaMax").innerText =
+          "Máxima pérdida permitida: $" + perdida;
+      } else {
+        document.getElementById("perdidaMax").innerText = "";
+      }
+    }
+
+    function guardarDia(nombre) {
+      const fecha = document.getElementById("fecha" + capitalizar(nombre)).value;
+      const par = document.getElementById("par" + capitalizar(nombre)).value;
+      const tipo = document.getElementById("tipo" + capitalizar(nombre)).value;
+      const resultado = document.getElementById("resultado" + capitalizar(nombre)).value;
+      const estrategia = document.getElementById("estrategia" + capitalizar(nombre)).value;
+      const comentario = document.getElementById("comentario" + capitalizar(nombre)).value;
+      const captura = document.getElementById("captura" + capitalizar(nombre)).files[0];
       const dia = new Date().getDate();
 
       let registro = {
@@ -196,18 +259,18 @@
         captura: captura ? URL.createObjectURL(captura) : null
       };
 
-      let clave = "historial_" + pestañaActiva;
+      let clave = "historial_" + nombre;
       let historial = JSON.parse(localStorage.getItem(clave)) || {};
       historial[dia] = historial[dia] || [];
       historial[dia].push(registro);
       localStorage.setItem(clave, JSON.stringify(historial));
-      mostrarDias();
+      mostrarDias(nombre);
     }
 
-    function mostrarDias() {
-      let clave = "historial_" + pestañaActiva;
+    function mostrarDias(nombre) {
+      let clave = "historial_" + nombre;
       let historial = JSON.parse(localStorage.getItem(clave)) || {};
-      let contenedor = document.getElementById("dias");
+      let contenedor = document.getElementById("dias" + capitalizar(nombre));
       contenedor.innerHTML = "";
       for (let i = 1; i <= 30; i++) {
         const diaDiv = document.createElement("div");
@@ -217,15 +280,15 @@
           diaDiv.style.background = "#00ffcc";
           diaDiv.style.color = "#000";
         }
-        diaDiv.onclick = () => mostrarHistorial(i);
+        diaDiv.onclick = () => mostrarHistorial(nombre, i);
         contenedor.appendChild(diaDiv);
       }
     }
 
-    function mostrarHistorial(dia) {
-      let clave = "historial_" + pestañaActiva;
+    function mostrarHistorial(nombre, dia) {
+      let clave = "historial_" + nombre;
       let historial = JSON.parse(localStorage.getItem(clave)) || {};
-      let contenedor = document.getElementById("historial");
+      let contenedor = document.getElementById("historial" + capitalizar(nombre));
       contenedor.innerHTML = "";
       if (!historial[dia]) {
         contenedor.innerHTML = "<p>No hay registros para este día.</p>";
@@ -244,15 +307,15 @@
       });
     }
 
-    function limpiarHistorial() {
-      let clave = "historial_" + pestañaActiva;
+    function limpiarHistorial(nombre) {
+      let clave = "historial_" + nombre;
       localStorage.removeItem(clave);
-      mostrarDias();
-      document.getElementById("historial").innerHTML = "";
+      mostrarDias(nombre);
+      document.getElementById("historial" + capitalizar(nombre)).innerHTML = "";
     }
 
-    function exportarCSV() {
-      let clave = "historial_" + pestañaActiva;
+    function exportarCSV(nombre) {
+      let clave = "historial_" + nombre;
       let historial = JSON.parse(localStorage.getItem(clave)) || {};
       let csv = "Día,Fecha,Par,Tipo,Resultado,Estrategia,Comentario\n";
       for (let dia in historial) {
@@ -264,11 +327,17 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "gestion_riesgo_" + pestañaActiva + ".csv";
+      a.download = "gestion_riesgo_" + nombre + ".csv";
       a.click();
     }
 
-    window.onload = mostrarDias;
+    function capitalizar(texto) {
+      return texto.charAt(0).toUpperCase() + texto.slice(1);
+    }
+
+    window.onload = () => {
+      cambiarTab(document.querySelector('.tab.active'), 'general');
+    };
   </script>
 </body>
 </html>
