@@ -5,41 +5,99 @@
   <title>BOT DE GESTIÓN MANUAL BINARIAS</title>
   <style>
     body {
-      background: #0d0d0d;
+      background: linear-gradient(180deg, #0d0d0d, #1a1a1a);
       color: #00ff99;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
     }
     header {
       background: #111;
-      padding: 15px;
+      padding: 20px;
       text-align: center;
       border-bottom: 2px solid #00ccff;
+      box-shadow: 0 0 15px #00ccff;
     }
-    header h1 { margin: 0; color: #00ff99; }
-    header h2 { margin: 0; color: #00ccff; }
-    .platform-buttons { text-align: center; margin: 15px; }
+    header h1 {
+      color: #00ff99;
+      font-size: 28px;
+      margin: 0;
+      text-shadow: 0 0 10px #00ff99;
+    }
+    header h2 {
+      color: #00ccff;
+      font-size: 18px;
+      margin: 0;
+      text-shadow: 0 0 8px #00ccff;
+    }
+    .platform-buttons {
+      text-align: center;
+      margin: 15px;
+    }
     .platform-buttons button {
-      background: #00ccff; border: none; padding: 10px 20px; margin: 5px;
-      color: #fff; font-weight: bold; border-radius: 5px; cursor: pointer;
+      background: #00ccff;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ccff;
+      transition: 0.3s;
     }
-    .platform-buttons button:hover { background: #0099cc; }
-    .container { padding: 20px; }
+    .platform-buttons button:hover {
+      background: #0099cc;
+      box-shadow: 0 0 20px #00ff99;
+    }
+    .container {
+      padding: 20px;
+    }
     .card {
-      background: #1a1a1a; border: 1px solid #00ff99; border-radius: 8px;
-      padding: 15px; margin-bottom: 15px; box-shadow: 0 0 10px #00ccff;
+      background: #1a1a1a;
+      border: 1px solid #00ff99;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 15px #00ccff;
+      transition: transform 0.2s;
     }
-    .card h3 { margin-top: 0; color: #00ccff; }
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 25px #00ff99;
+    }
+    .card h3 {
+      margin-top: 0;
+      color: #00ccff;
+      text-shadow: 0 0 8px #00ccff;
+    }
     input, select, textarea {
-      background: #0d0d0d; color: #00ff99; border: 1px solid #00ccff;
-      padding: 5px; margin: 5px 0; border-radius: 5px; width: 100%;
+      background-color: #0d0d0d;
+      color: #00ff99;
+      border: 1px solid #00ccff;
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 6px;
+      width: 100%;
+      box-shadow: inset 0 0 5px #00ccff;
     }
     button.action {
-      background: #00ff99; color: #000; font-weight: bold; padding: 8px 12px;
-      border: none; border-radius: 5px; cursor: pointer; margin: 5px;
+      background: #00ff99;
+      color: #000;
+      font-weight: bold;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px;
+      box-shadow: 0 0 10px #00ff99;
+      transition: 0.3s;
     }
-    button.action:hover { background: #00ccff; color: #fff; }
+    button.action:hover {
+      background: #00ccff;
+      color: #fff;
+      box-shadow: 0 0 20px #00ff99;
+    }
   </style>
 </head>
 <body>
@@ -124,6 +182,10 @@
     });
     alert("Operación guardada en Día " + dia + " (" + plataforma + ")");
   }
+  // ============================
+  // PARTE 3: Control de días
+  // ============================
+
   function actualizarListaDias() {
     let html = "";
     for (let i=1; i<=9; i++) {
@@ -170,6 +232,10 @@
     }
     alert(historial || "No hay historial registrado.");
   }
+  // ============================
+  // PARTE 4: Exportación
+  // ============================
+
   function exportarCSV() {
     let filas = ["Dia,Fecha,Hora,Par,Estrategia,Señal,Resultado,Comentario,Captura,Plataforma"];
     for (let dia in dias) {
