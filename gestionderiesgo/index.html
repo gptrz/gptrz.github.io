@@ -5,186 +5,120 @@
   <title>Bot de Gestión Manual Binarias</title>
   <style>
     body {
-      background-color: #0d0d0d;
+      background: #0d0d0d;
       color: #00ff99;
-      font-family: 'Courier New', monospace;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-    h1, h2 {
-      color: #00ccff;
-    }
-    .panel {
-      border: 1px solid #00ff99;
+    header {
+      background: #111;
       padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      background-color: #1a1a1a;
+      text-align: center;
+      border-bottom: 2px solid #00ccff;
     }
-    button {
-      background-color: #00ccff;
-      border: none;
-      padding: 10px 15px;
-      margin: 5px;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 5px;
+    header h1 { margin: 0; color: #00ff99; }
+    header h2 { margin: 0; color: #00ccff; }
+    .platform-buttons { text-align: center; margin: 15px; }
+    .platform-buttons button {
+      background: #00ccff; border: none; padding: 10px 20px; margin: 5px;
+      color: #fff; font-weight: bold; border-radius: 5px; cursor: pointer;
     }
-    button:hover {
-      background-color: #0099cc;
+    .platform-buttons button:hover { background: #0099cc; }
+    .container { padding: 20px; }
+    .card {
+      background: #1a1a1a; border: 1px solid #00ff99; border-radius: 8px;
+      padding: 15px; margin-bottom: 15px; box-shadow: 0 0 10px #00ccff;
     }
+    .card h3 { margin-top: 0; color: #00ccff; }
     input, select, textarea {
-      background-color: #0d0d0d;
-      color: #00ff99;
-      border: 1px solid #00ccff;
-      padding: 5px;
-      margin: 5px;
-      border-radius: 5px;
+      background: #0d0d0d; color: #00ff99; border: 1px solid #00ccff;
+      padding: 5px; margin: 5px 0; border-radius: 5px; width: 100%;
     }
-    .resumen {
-      background-color: #111;
-      padding: 10px;
-      border-radius: 5px;
+    button.action {
+      background: #00ff99; color: #000; font-weight: bold; padding: 8px 12px;
+      border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;
     }
+    button.action:hover { background: #00ccff; color: #fff; }
   </style>
 </head>
 <body>
-  <h1>BOT DE GESTIÓN MANUAL BINARIAS</h1>
-  <h2>Rolando Style 😎</h2>
+  <header>
+    <h1>BOT DE GESTIÓN MANUAL BINARIAS</h1>
+    <h2>Rolando Style 😎</h2>
+  </header>
 
-  <!-- Checklist -->
-  <div class="panel">
-    <h2>✅ Checklist antes de operar</h2>
-    <ul>
-      <li>Día hábil (no fin de semana)</li>
-      <li>Liquidez alta (London/NY)</li>
-      <li>Noticias revisadas (evitar 3 estrellas)</li>
-      <li>Divisa correcta (ej. EUR/USD)</li>
-      <li>Estrategia definida (3 velas lateral)</li>
-      <li>Gestión clara (máx. 2% por trade)</li>
-      <li>Paciencia y consistencia activadas 😎</li>
-    </ul>
+  <!-- Botones de plataforma -->
+  <div class="platform-buttons">
+    <button onclick="setPlataforma('Exnova')">Exnova</button>
+    <button onclick="setPlataforma('IQ Option')">IQ Option</button>
   </div>
 
-  <!-- Registro de operación -->
-  <div class="panel">
-    <h2>✏️ Registrar operación</h2>
-    <form id="formOperacion">
-      Día: <input type="number" id="dia" min="1" max="30"><br>
-      Fecha: <input type="date" id="fecha"><br>
-      Hora: <input type="time" id="hora"><br>
-      Par: <input type="text" id="par" placeholder="EUR/USD"><br>
-      Estrategia: <input type="text" id="estrategia" placeholder="3 velas lateral"><br>
-      Resultado:
-      <select id="resultado">
-        <option value="G">Ganada</option>
-        <option value="P">Perdida</option>
-      </select><br>
-      Comentario: <textarea id="comentario"></textarea><br>
-      <button type="button" onclick="guardarOperacion()">Guardar Operación</button>
-    </form>
+  <!-- Navegación de días -->
+  <div class="platform-buttons">
+    <h2>📅 Seleccionar Día</h2>
+    <div id="listaDias"></div>
+    <button onclick="mostrarTodosDias()">Mostrar todo</button>
   </div>
 
-  <!-- Resúmenes -->
-  <div class="panel resumen" id="resumenDiario"></div>
-  <div class="panel resumen" id="resumenSemanal"></div>
-  <div class="panel resumen" id="resumenMensual"></div>
-
-  <script>
-    let dias = {};
-
-    function guardarOperacion() {
-      let dia = document.getElementById("dia").value;
-      if (!dias[dia]) dias[dia] = [];
-      dias[dia].push({
-        fecha: document.getElementById("fecha").value,
-        hora: document.getElementById("hora").value,
-        par: document.getElementById("par").value,
-        estrategia: document.getElementById("estrategia").value,
-        resultado: document.getElementById("resultado").value,
-        comentario: document.getElementById("comentario").value
-      });
-      mostrarResumenDiario(dia);
-      mostrarResumenSemanal();
-      mostrarResumenMensual();
-    }
-
-    function mostrarResumenDiario(dia) {
-      let ops = dias[dia] || [];
-      let ganadas = ops.filter(op => op.resultado === "G").length;
-      let perdidas = ops.filter(op => op.resultado === "P").length;
-      let total = ops.length;
-      let porcentaje = total ? (ganadas/total*100).toFixed(2) : 0;
-      document.getElementById("resumenDiario").innerHTML =
-        `<h2>📊 Resumen Día ${dia}</h2>
-         Total: ${total}<br>
-         Ganadas: ${ganadas} | Perdidas: ${perdidas}<br>
-         Aciertos: ${porcentaje}%`;
-    }
-
-    function mostrarResumenSemanal() {
-      let ganadas=0, perdidas=0;
-      for (let i=1; i<=7; i++) {
-        if (dias[i]) {
-          dias[i].forEach(op => {
-            if (op.resultado==="G") ganadas++;
-            if (op.resultado==="P") perdidas++;
-          });
-        }
-      }
-      let total = ganadas+perdidas;
-      let porcentaje = total ? (ganadas/total*100).toFixed(2) : 0;
-      document.getElementById("resumenSemanal").innerHTML =
-        `<h2>📅 Resumen Semanal</h2>
-         Total: ${total}<br>
-         Ganadas: ${ganadas} | Perdidas: ${perdidas}<br>
-         Aciertos: ${porcentaje}%`;
-    }
-
-    function mostrarResumenMensual() {
-      let ganadas=0, perdidas=0;
-      for (let i=1; i<=30; i++) {
-        if (dias[i]) {
-          dias[i].forEach(op => {
-            if (op.resultado==="G") ganadas++;
-            if (op.resultado==="P") perdidas++;
-          });
-        }
-      }
-      let total = ganadas+perdidas;
-      let porcentaje = total ? (ganadas/total*100).toFixed(2) : 0;
-      document.getElementById("resumenMensual").innerHTML =
-        `<h2>📅 Resumen Mensual</h2>
-         Total: ${total}<br>
-         Ganadas: ${ganadas} | Perdidas: ${perdidas}<br>
-         Aciertos: ${porcentaje}%`;
-    }
-  </script>
-</body>
-</html>
-<!-- Panel lateral de días -->
-<div class="panel">
-  <h2>📅 Días de Operación</h2>
-  <div id="listaDias"></div>
-  <button onclick="mostrarTodosDias()">Mostrar todo</button>
-</div>
-
-<!-- Capturas -->
-<div class="panel">
-  <h2>📸 Guardar Captura</h2>
-  Día: <input type="number" id="diaCaptura" min="1" max="30"><br>
-  <input type="file" id="archivoCaptura" accept="image/*"><br>
-  <button onclick="guardarCaptura()">Guardar Captura</button>
-  <div id="capturasGuardadas"></div>
-</div>
-
+  <div class="container" id="operacionesContainer">
+    <!-- Aquí se van creando las cards de operaciones -->
+  </div>
 <script>
-  // Mostrar solo días 1–9
+  let plataforma = "Exnova";
+  let dias = {};
+
+  function setPlataforma(nombre) {
+    plataforma = nombre;
+    alert("Plataforma seleccionada: " + nombre);
+  }
+
+  function nuevaOperacion(dia) {
+    if (!dias[dia]) dias[dia] = [];
+    let idx = dias[dia].length + 1;
+
+    let card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <h3>Operación ${idx} - Día ${dia} (${plataforma})</h3>
+      Fecha: <input type="date" id="fecha${dia}_${idx}"><br>
+      Hora: <input type="time" id="hora${dia}_${idx}"><br>
+      Par: <input type="text" id="par${dia}_${idx}" placeholder="EUR/USD"><br>
+      Estrategia: <input type="text" id="estrategia${dia}_${idx}" placeholder="3 velas lateral"><br>
+      Señal: <select id="senal${dia}_${idx}">
+        <option value="CALL">CALL</option>
+        <option value="PUT">PUT</option>
+      </select><br>
+      Resultado: <select id="resultado${dia}_${idx}">
+        <option value="G">Ganancia</option>
+        <option value="P">Pérdida</option>
+      </select><br>
+      Comentario: <textarea id="comentario${dia}_${idx}"></textarea><br>
+      Captura: <input type="file" id="captura${dia}_${idx}" accept="image/*"><br>
+      <button class="action" onclick="guardarOperacion(${dia}, ${idx})">Guardar Operación</button>
+    `;
+    document.getElementById("operacionesContainer").appendChild(card);
+  }
+
+  function guardarOperacion(dia, idx) {
+    if (!dias[dia]) dias[dia] = [];
+    dias[dia].push({
+      fecha: document.getElementById(`fecha${dia}_${idx}`).value,
+      hora: document.getElementById(`hora${dia}_${idx}`).value,
+      par: document.getElementById(`par${dia}_${idx}`).value,
+      estrategia: document.getElementById(`estrategia${dia}_${idx}`).value,
+      senal: document.getElementById(`senal${dia}_${idx}`).value,
+      resultado: document.getElementById(`resultado${dia}_${idx}`).value,
+      comentario: document.getElementById(`comentario${dia}_${idx}`).value,
+      captura: document.getElementById(`captura${dia}_${idx}`).files[0]?.name || "Sin captura",
+      plataforma: plataforma
+    });
+    alert("Operación guardada en Día " + dia + " (" + plataforma + ")");
+  }
   function actualizarListaDias() {
     let html = "";
     for (let i=1; i<=9; i++) {
-      html += `<button onclick="resumenDiario(${i})">Día ${i}</button>`;
+      html += `<button onclick="cargarDia(${i})">Día ${i}</button>`;
     }
     document.getElementById("listaDias").innerHTML = html;
   }
@@ -192,235 +126,59 @@
   function mostrarTodosDias() {
     let html = "";
     for (let i=1; i<=30; i++) {
-      html += `<button onclick="resumenDiario(${i})">Día ${i}</button>`;
+      html += `<button onclick="cargarDia(${i})">Día ${i}</button>`;
     }
     document.getElementById("listaDias").innerHTML = html;
   }
 
-  // Guardar capturas por día
-  let capturas = {};
-
-  function guardarCaptura() {
-    let dia = document.getElementById("diaCaptura").value;
-    let archivo = document.getElementById("archivoCaptura").files[0];
-    if (!archivo) {
-      alert("Selecciona una imagen primero");
-      return;
-    }
-    if (!capturas[dia]) capturas[dia] = [];
-    capturas[dia].push(archivo.name);
-    mostrarCapturas(dia);
-  }
-
-  function mostrarCapturas(dia) {
-    let lista = capturas[dia] || [];
-    let html = `<h3>Capturas Día ${dia}</h3>`;
-    lista.forEach((cap, idx) => {
-      html += `<p>${idx+1}. ${cap}</p>`;
-    });
-    document.getElementById("capturasGuardadas").innerHTML = html;
-  }
-
-  // Inicializar panel lateral
-  actualizarListaDias();
-<script>
-  // ============================
-  // PARTE 3: Guardado automático
-  // ============================
-
-  // Guardar operaciones y capturas en localStorage
-  function guardarDatos() {
-    localStorage.setItem("operaciones", JSON.stringify(dias));
-    localStorage.setItem("capturas", JSON.stringify(capturas));
-  }
-
-  // Cargar operaciones y capturas al iniciar
-  function cargarDatos() {
-    let opsGuardadas = localStorage.getItem("operaciones");
-    let capsGuardadas = localStorage.getItem("capturas");
-    if (opsGuardadas) dias = JSON.parse(opsGuardadas);
-    if (capsGuardadas) capturas = JSON.parse(capsGuardadas);
-
-    // Mostrar resúmenes si hay datos
-    mostrarResumenSemanal();
-    mostrarResumenMensual();
-    actualizarListaDias();
-  }
-
-  // Modificar funciones existentes para guardar automáticamente
-  function guardarOperacion() {
-    let dia = document.getElementById("dia").value;
+  function cargarDia(dia) {
+    document.getElementById("operacionesContainer").innerHTML = "";
     if (!dias[dia]) dias[dia] = [];
-    dias[dia].push({
-      fecha: document.getElementById("fecha").value,
-      hora: document.getElementById("hora").value,
-      par: document.getElementById("par").value,
-      estrategia: document.getElementById("estrategia").value,
-      resultado: document.getElementById("resultado").value,
-      comentario: document.getElementById("comentario").value
-    });
-    mostrarResumenDiario(dia);
-    mostrarResumenSemanal();
-    mostrarResumenMensual();
-    guardarDatos(); // 🔥 Guardar en localStorage
+    nuevaOperacion(dia);
+    alert("Día " + dia + " cargado.");
   }
 
-  function guardarCaptura() {
-    let dia = document.getElementById("diaCaptura").value;
-    let archivo = document.getElementById("archivoCaptura").files[0];
-    if (!archivo) {
-      alert("Selecciona una imagen primero");
-      return;
+  function guardarDia(dia) {
+    localStorage.setItem("dia_" + dia, JSON.stringify(dias[dia]));
+    alert("Día " + dia + " guardado correctamente.");
+  }
+
+  function borrarDia(dia) {
+    delete dias[dia];
+    localStorage.removeItem("dia_" + dia);
+    document.getElementById("operacionesContainer").innerHTML = "";
+    alert("Día " + dia + " borrado.");
+  }
+
+  function verHistorial() {
+    let historial = "";
+    for (let dia in dias) {
+      historial += "📅 Día " + dia + "\n";
+      dias[dia].forEach((op, idx) => {
+        historial += `${idx+1}. ${op.fecha} ${op.hora} ${op.par} ${op.estrategia} ${op.senal} ${op.resultado} (${op.plataforma})\nComentario: ${op.comentario}\nCaptura: ${op.captura}\n\n`;
+      });
     }
-    if (!capturas[dia]) capturas[dia] = [];
-    capturas[dia].push(archivo.name);
-    mostrarCapturas(dia);
-    guardarDatos(); // 🔥 Guardar en localStorage
+    alert(historial || "No hay historial registrado.");
   }
-
-  // Ejecutar carga al abrir la página
-  window.onload = cargarDatos;
-<script>
-  // ============================
-  // PARTE 4: Exportar a CSV/TXT
-  // ============================
 
   function exportarCSV() {
-    let filas = ["Dia,Fecha,Hora,Par,Estrategia,Resultado,Comentario"];
+    let filas = ["Dia,Fecha,Hora,Par,Estrategia,Señal,Resultado,Comentario,Captura,Plataforma"];
     for (let dia in dias) {
       dias[dia].forEach(op => {
-        filas.push(`${dia},${op.fecha},${op.hora},${op.par},${op.estrategia},${op.resultado},${op.comentario}`);
+        filas.push(`${dia},${op.fecha},${op.hora},${op.par},${op.estrategia},${op.senal},${op.resultado},${op.comentario},${op.captura},${op.plataforma}`);
       });
     }
     let contenido = filas.join("\n");
-    descargarArchivo(contenido, "diario_trading.csv", "text/csv");
-  }
-
-  function exportarTXT() {
-    let contenido = "📓 Diario de Trading Binarias\n\n";
-    for (let dia in dias) {
-      contenido += `Día ${dia}\n`;
-      dias[dia].forEach((op, idx) => {
-        contenido += `${idx+1}. Fecha: ${op.fecha} Hora: ${op.hora} Par: ${op.par} Estrategia: ${op.estrategia} Resultado: ${op.resultado} Comentario: ${op.comentario}\n`;
-      });
-      contenido += "\n";
-    }
-    descargarArchivo(contenido, "diario_trading.txt", "text/plain");
-  }
-
-  function descargarArchivo(contenido, nombreArchivo, tipo) {
-    let blob = new Blob([contenido], { type: tipo });
+    let blob = new Blob([contenido], { type: "text/csv" });
     let url = URL.createObjectURL(blob);
     let a = document.createElement("a");
     a.href = url;
-    a.download = nombreArchivo;
+    a.download = "diario_trading.csv";
     a.click();
     URL.revokeObjectURL(url);
   }
+
+  window.onload = actualizarListaDias;
 </script>
-<div class="panel">
-  <h2>📤 Exportar Diario</h2>
-  <button onclick="exportarCSV()">Exportar a CSV</button>
-  <button onclick="exportarTXT()">Exportar a TXT</button>
-</div>
-<style>
-  body {
-    background: linear-gradient(180deg, #0d0d0d, #1a1a1a);
-    color: #00ff99;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  header {
-    background-color: #111;
-    padding: 20px;
-    text-align: center;
-    border-bottom: 2px solid #00ccff;
-  }
-  header h1 {
-    color: #00ff99;
-    font-size: 28px;
-    margin: 0;
-  }
-  header h2 {
-    color: #00ccff;
-    font-size: 18px;
-    margin: 0;
-  }
-  .container {
-    display: flex;
-    flex-direction: row;
-    min-height: 100vh;
-  }
-  .sidebar {
-    width: 220px;
-    background-color: #111;
-    border-right: 2px solid #00ccff;
-    padding: 15px;
-  }
-  .sidebar h2 {
-    color: #00ccff;
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  .sidebar button {
-    display: block;
-    width: 100%;
-    margin: 5px 0;
-    background-color: #00ccff;
-    border: none;
-    padding: 8px;
-    color: #fff;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  .sidebar button:hover {
-    background-color: #0099cc;
-  }
-  .main {
-    flex: 1;
-    padding: 20px;
-  }
-  .panel {
-    border: 1px solid #00ff99;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    background-color: #1a1a1a;
-    box-shadow: 0 0 10px #00ccff;
-  }
-  .panel h2 {
-    color: #00ccff;
-    margin-top: 0;
-  }
-  input, select, textarea {
-    background-color: #0d0d0d;
-    color: #00ff99;
-    border: 1px solid #00ccff;
-    padding: 5px;
-    margin: 5px 0;
-    border-radius: 5px;
-    width: 100%;
-  }
-  button.action {
-    background-color: #00ff99;
-    color: #000;
-    font-weight: bold;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  button.action:hover {
-    background-color: #00ccff;
-    color: #fff;
-  }
-  .resumen {
-    background-color: #111;
-    padding: 10px;
-    border-radius: 5px;
-  }
-</style>
-
-
+</body>
+</html>
