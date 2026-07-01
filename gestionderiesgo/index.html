@@ -2,342 +2,425 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Gestión de Riesgo GPTRZ</title>
+  <title>Bot de Gestión Manual Binarias</title>
   <style>
     body {
-      background: #0a0a0a;
-      color: #00ffcc;
-      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d0d0d;
+      color: #00ff99;
+      font-family: 'Courier New', monospace;
       margin: 0;
-      padding: 0;
-      text-align: center;
+      padding: 20px;
     }
-    h1 {
-      font-size: 32px;
-      color: #00ffcc;
-      text-shadow: 0 0 15px #00ffcc;
-      margin-top: 20px;
+    h1, h2 {
+      color: #00ccff;
     }
-    .tabs {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-      gap: 10px;
-    }
-    .tab {
-      background: #111;
-      border: 2px solid #00ffcc;
-      color: #00ffcc;
-      padding: 10px 20px;
+    .panel {
+      border: 1px solid #00ff99;
+      padding: 15px;
+      margin-bottom: 20px;
       border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .tab.active {
-      background: #00ffcc;
-      color: #000;
-      box-shadow: 0 0 15px #00ffcc;
-    }
-    .contenedor {
-      max-width: 950px;
-      margin: 20px auto;
-      background: #121212;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px #00ffcc;
-    }
-    input, select, textarea {
-      width: 90%;
-      padding: 10px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 6px;
-      background: #1e1e1e;
-      color: #fff;
-      font-size: 14px;
+      background-color: #1a1a1a;
     }
     button {
-      background: #00aaff;
-      color: #fff;
+      background-color: #00ccff;
       border: none;
-      padding: 10px 20px;
-      margin: 10px;
-      border-radius: 6px;
+      padding: 10px 15px;
+      margin: 5px;
+      color: #fff;
+      font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
+      border-radius: 5px;
     }
     button:hover {
-      background: #00ffcc;
-      color: #000;
-      box-shadow: 0 0 10px #00ffcc;
+      background-color: #0099cc;
     }
-    .dias {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 25px;
+    input, select, textarea {
+      background-color: #0d0d0d;
+      color: #00ff99;
+      border: 1px solid #00ccff;
+      padding: 5px;
+      margin: 5px;
+      border-radius: 5px;
     }
-    .dia {
-      background: #1a1a1a;
-      border: 2px solid #00ffcc;
-      color: #00ffcc;
-      width: 60px;
-      height: 60px;
-      margin: 8px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .dia:hover {
-      background: #00ffcc;
-      color: #000;
-      transform: scale(1.1);
-    }
-    .registro {
-      background: #1e1e1e;
-      margin: 15px 0;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: left;
-      box-shadow: 0 0 10px #00ffcc;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #00ffcc;
-      padding: 8px;
-      text-align: center;
-      color: #fff;
-    }
-    th {
-      background: #00ffcc;
-      color: #000;
-    }
-    .volver {
-      margin-top: 30px;
-      display: inline-block;
-      color: #00ffcc;
-      text-decoration: none;
-      font-weight: bold;
-      border: 2px solid #00ffcc;
-      padding: 8px 20px;
-      border-radius: 8px;
-      transition: 0.3s;
-    }
-    .volver:hover {
-      background: #00ffcc;
-      color: #000;
+    .resumen {
+      background-color: #111;
+      padding: 10px;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
-  <h1>GESTIÓN DE RIESGO GPTRZ</h1>
-  <div class="tabs">
-    <div class="tab active" onclick="cambiarTab(this, 'general')">GENERAL</div>
-    <div class="tab" onclick="cambiarTab(this, 'exnova')">EXNOVA</div>
-    <div class="tab" onclick="cambiarTab(this, 'iqoption')">IQ OPTION</div>
+  <h1>BOT DE GESTIÓN MANUAL BINARIAS</h1>
+  <h2>Rolando Style 😎</h2>
+
+  <!-- Checklist -->
+  <div class="panel">
+    <h2>✅ Checklist antes de operar</h2>
+    <ul>
+      <li>Día hábil (no fin de semana)</li>
+      <li>Liquidez alta (London/NY)</li>
+      <li>Noticias revisadas (evitar 3 estrellas)</li>
+      <li>Divisa correcta (ej. EUR/USD)</li>
+      <li>Estrategia definida (3 velas lateral)</li>
+      <li>Gestión clara (máx. 2% por trade)</li>
+      <li>Paciencia y consistencia activadas 😎</li>
+    </ul>
   </div>
 
-  <!-- Sección GENERAL -->
-  <div class="contenedor" id="general">
-    <h3>Configuraciones Generales</h3>
-    <input id="capitalGeneral" type="number" placeholder="Capital inicial ($)">
-    <input id="riesgoGeneral" type="number" placeholder="% Riesgo máximo">
-    <p id="perdidaMax"></p>
+  <!-- Registro de operación -->
+  <div class="panel">
+    <h2>✏️ Registrar operación</h2>
+    <form id="formOperacion">
+      Día: <input type="number" id="dia" min="1" max="30"><br>
+      Fecha: <input type="date" id="fecha"><br>
+      Hora: <input type="time" id="hora"><br>
+      Par: <input type="text" id="par" placeholder="EUR/USD"><br>
+      Estrategia: <input type="text" id="estrategia" placeholder="3 velas lateral"><br>
+      Resultado:
+      <select id="resultado">
+        <option value="G">Ganada</option>
+        <option value="P">Perdida</option>
+      </select><br>
+      Comentario: <textarea id="comentario"></textarea><br>
+      <button type="button" onclick="guardarOperacion()">Guardar Operación</button>
+    </form>
   </div>
 
-  <!-- Sección EXNOVA -->
-  <div class="contenedor" id="exnova" style="display:none;">
-    <h3>Registrar Operación - EXNOVA</h3>
-    <input id="fechaExnova" type="date">
-    <select id="parExnova">
-      <option>EUR/USD</option>
-      <option>GBP/JPY</option>
-      <option>USD/JPY</option>
-      <option>OTC</option>
-    </select>
-    <select id="tipoExnova">
-      <option>CALL</option>
-      <option>PUT</option>
-    </select>
-    <input id="resultadoExnova" type="text" placeholder="Resultado (ej: +1 / -1)">
-    <input id="estrategiaExnova" type="text" placeholder="Estrategia usada">
-    <textarea id="comentarioExnova" placeholder="Comentario"></textarea>
-    <input id="capturaExnova" type="file" accept="image/*">
-    <button onclick="guardarDia('exnova')">Guardar Día</button>
-    <button onclick="exportarCSV('exnova')">Exportar CSV</button>
-    <button onclick="limpiarHistorial('exnova')">Borrar Todo</button>
+  <!-- Resúmenes -->
+  <div class="panel resumen" id="resumenDiario"></div>
+  <div class="panel resumen" id="resumenSemanal"></div>
+  <div class="panel resumen" id="resumenMensual"></div>
 
-    <h3>Días Operados</h3>
-    <div class="dias" id="diasExnova"></div>
-
-    <h3>Historial del Día</h3>
-    <div id="historialExnova"></div>
-  </div>
-
-  <!-- Sección IQ OPTION -->
-  <div class="contenedor" id="iqoption" style="display:none;">
-    <h3>Registrar Operación - IQ OPTION</h3>
-    <input id="fechaIq" type="date">
-    <select id="parIq">
-      <option>EUR/USD</option>
-      <option>GBP/JPY</option>
-      <option>USD/JPY</option>
-      <option>OTC</option>
-    </select>
-    <select id="tipoIq">
-      <option>CALL</option>
-      <option>PUT</option>
-    </select>
-    <input id="resultadoIq" type="text" placeholder="Resultado (ej: +1 / -1)">
-    <input id="estrategiaIq" type="text" placeholder="Estrategia usada">
-    <textarea id="comentarioIq" placeholder="Comentario"></textarea>
-    <input id="capturaIq" type="file" accept="image/*">
-    <button onclick="guardarDia('iqoption')">Guardar Día</button>
-    <button onclick="exportarCSV('iqoption')">Exportar CSV</button>
-    <button onclick="limpiarHistorial('iqoption')">Borrar Todo</button>
-
-    <h3>Días Operados</h3>
-    <div class="dias" id="diasIq"></div>
-
-    <h3>Historial del Día</h3>
-    <div id="historialIq"></div>
-  </div>
-
-  <a href="../index.html" class="volver">← VOLVER AL INICIO</a>
   <script>
-    let pestañaActiva = "general"; // por defecto
+    let dias = {};
 
-    function cambiarTab(tab, nombre) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      pestañaActiva = nombre;
-
-      // Mostrar solo la sección activa
-      document.querySelectorAll('.contenedor').forEach(c => c.style.display = "none");
-      document.getElementById(nombre).style.display = "block";
-
-      if (nombre === "general") {
-        calcularPerdida();
-      } else {
-        mostrarDias(nombre);
-        document.getElementById("historial" + capitalizar(nombre)).innerHTML = "";
-      }
-    }
-
-    function calcularPerdida() {
-      const capital = document.getElementById("capitalGeneral").value;
-      const riesgo = document.getElementById("riesgoGeneral").value;
-      if (capital && riesgo) {
-        const perdida = (capital * riesgo) / 100;
-        document.getElementById("perdidaMax").innerText =
-          "Máxima pérdida permitida: $" + perdida;
-      } else {
-        document.getElementById("perdidaMax").innerText = "";
-      }
-    }
-
-    function guardarDia(nombre) {
-      const fecha = document.getElementById("fecha" + capitalizar(nombre)).value;
-      const par = document.getElementById("par" + capitalizar(nombre)).value;
-      const tipo = document.getElementById("tipo" + capitalizar(nombre)).value;
-      const resultado = document.getElementById("resultado" + capitalizar(nombre)).value;
-      const estrategia = document.getElementById("estrategia" + capitalizar(nombre)).value;
-      const comentario = document.getElementById("comentario" + capitalizar(nombre)).value;
-      const captura = document.getElementById("captura" + capitalizar(nombre)).files[0];
-      const dia = new Date().getDate();
-
-      let registro = {
-        fecha, par, tipo, resultado, estrategia, comentario,
-        captura: captura ? URL.createObjectURL(captura) : null
-      };
-
-      let clave = "historial_" + nombre;
-      let historial = JSON.parse(localStorage.getItem(clave)) || {};
-      historial[dia] = historial[dia] || [];
-      historial[dia].push(registro);
-      localStorage.setItem(clave, JSON.stringify(historial));
-      mostrarDias(nombre);
-    }
-
-    function mostrarDias(nombre) {
-      let clave = "historial_" + nombre;
-      let historial = JSON.parse(localStorage.getItem(clave)) || {};
-      let contenedor = document.getElementById("dias" + capitalizar(nombre));
-      contenedor.innerHTML = "";
-      for (let i = 1; i <= 30; i++) {
-        const diaDiv = document.createElement("div");
-        diaDiv.className = "dia";
-        diaDiv.textContent = i;
-        if (historial[i]) {
-          diaDiv.style.background = "#00ffcc";
-          diaDiv.style.color = "#000";
-        }
-        diaDiv.onclick = () => mostrarHistorial(nombre, i);
-        contenedor.appendChild(diaDiv);
-      }
-    }
-
-    function mostrarHistorial(nombre, dia) {
-      let clave = "historial_" + nombre;
-      let historial = JSON.parse(localStorage.getItem(clave)) || {};
-      let contenedor = document.getElementById("historial" + capitalizar(nombre));
-      contenedor.innerHTML = "";
-      if (!historial[dia]) {
-        contenedor.innerHTML = "<p>No hay registros para este día.</p>";
-        return;
-      }
-      historial[dia].forEach((reg, i) => {
-        contenedor.innerHTML += `
-          <div class="registro">
-            <strong>${reg.fecha}</strong><br>
-            Par: ${reg.par} | Tipo: ${reg.tipo} | Resultado: ${reg.resultado}<br>
-            Estrategia: ${reg.estrategia}<br>
-            Comentario: ${reg.comentario}<br>
-            ${reg.captura ? `<img src="${reg.captura}" alt="Captura">` : ""}
-          </div>
-        `;
+    function guardarOperacion() {
+      let dia = document.getElementById("dia").value;
+      if (!dias[dia]) dias[dia] = [];
+      dias[dia].push({
+        fecha: document.getElementById("fecha").value,
+        hora: document.getElementById("hora").value,
+        par: document.getElementById("par").value,
+        estrategia: document.getElementById("estrategia").value,
+        resultado: document.getElementById("resultado").value,
+        comentario: document.getElementById("comentario").value
       });
+      mostrarResumenDiario(dia);
+      mostrarResumenSemanal();
+      mostrarResumenMensual();
     }
 
-    function limpiarHistorial(nombre) {
-      let clave = "historial_" + nombre;
-      localStorage.removeItem(clave);
-      mostrarDias(nombre);
-      document.getElementById("historial" + capitalizar(nombre)).innerHTML = "";
+    function mostrarResumenDiario(dia) {
+      let ops = dias[dia] || [];
+      let ganadas = ops.filter(op => op.resultado === "G").length;
+      let perdidas = ops.filter(op => op.resultado === "P").length;
+      let total = ops.length;
+      let porcentaje = total ? (ganadas/total*100).toFixed(2) : 0;
+      document.getElementById("resumenDiario").innerHTML =
+        `<h2>📊 Resumen Día ${dia}</h2>
+         Total: ${total}<br>
+         Ganadas: ${ganadas} | Perdidas: ${perdidas}<br>
+         Aciertos: ${porcentaje}%`;
     }
 
-    function exportarCSV(nombre) {
-      let clave = "historial_" + nombre;
-      let historial = JSON.parse(localStorage.getItem(clave)) || {};
-      let csv = "Día,Fecha,Par,Tipo,Resultado,Estrategia,Comentario\n";
-      for (let dia in historial) {
-        historial[dia].forEach(reg => {
-          csv += `${dia},${reg.fecha},${reg.par},${reg.tipo},${reg.resultado},${reg.estrategia},${reg.comentario}\n`;
-        });
+    function mostrarResumenSemanal() {
+      let ganadas=0, perdidas=0;
+      for (let i=1; i<=7; i++) {
+        if (dias[i]) {
+          dias[i].forEach(op => {
+            if (op.resultado==="G") ganadas++;
+            if (op.resultado==="P") perdidas++;
+          });
+        }
       }
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "gestion_riesgo_" + nombre + ".csv";
-      a.click();
+      let total = ganadas+perdidas;
+      let porcentaje = total ? (ganadas/total*100).toFixed(2) : 0;
+      document.getElementById("resumenSemanal").innerHTML =
+        `<h2>📅 Resumen Semanal</h2>
+         Total: ${total}<br>
+         Ganadas: ${ganadas} | Perdidas: ${perdidas}<br>
+         Aciertos: ${porcentaje}%`;
     }
 
-    function capitalizar(texto) {
-      return texto.charAt(0).toUpperCase() + texto.slice(1);
+    function mostrarResumenMensual() {
+      let ganadas=0, perdidas=0;
+      for (let i=1; i<=30; i++) {
+        if (dias[i]) {
+          dias[i].forEach(op => {
+            if (op.resultado==="G") ganadas++;
+            if (op.resultado==="P") perdidas++;
+          });
+        }
+      }
+      let total = ganadas+perdidas;
+      let porcentaje = total ? (ganadas/total*100).toFixed(2) : 0;
+      document.getElementById("resumenMensual").innerHTML =
+        `<h2>📅 Resumen Mensual</h2>
+         Total: ${total}<br>
+         Ganadas: ${ganadas} | Perdidas: ${perdidas}<br>
+         Aciertos: ${porcentaje}%`;
     }
-
-    window.onload = () => {
-      cambiarTab(document.querySelector('.tab.active'), 'general');
-    };
   </script>
 </body>
 </html>
+<!-- Panel lateral de días -->
+<div class="panel">
+  <h2>📅 Días de Operación</h2>
+  <div id="listaDias"></div>
+  <button onclick="mostrarTodosDias()">Mostrar todo</button>
+</div>
+
+<!-- Capturas -->
+<div class="panel">
+  <h2>📸 Guardar Captura</h2>
+  Día: <input type="number" id="diaCaptura" min="1" max="30"><br>
+  <input type="file" id="archivoCaptura" accept="image/*"><br>
+  <button onclick="guardarCaptura()">Guardar Captura</button>
+  <div id="capturasGuardadas"></div>
+</div>
+
+<script>
+  // Mostrar solo días 1–9
+  function actualizarListaDias() {
+    let html = "";
+    for (let i=1; i<=9; i++) {
+      html += `<button onclick="resumenDiario(${i})">Día ${i}</button>`;
+    }
+    document.getElementById("listaDias").innerHTML = html;
+  }
+
+  function mostrarTodosDias() {
+    let html = "";
+    for (let i=1; i<=30; i++) {
+      html += `<button onclick="resumenDiario(${i})">Día ${i}</button>`;
+    }
+    document.getElementById("listaDias").innerHTML = html;
+  }
+
+  // Guardar capturas por día
+  let capturas = {};
+
+  function guardarCaptura() {
+    let dia = document.getElementById("diaCaptura").value;
+    let archivo = document.getElementById("archivoCaptura").files[0];
+    if (!archivo) {
+      alert("Selecciona una imagen primero");
+      return;
+    }
+    if (!capturas[dia]) capturas[dia] = [];
+    capturas[dia].push(archivo.name);
+    mostrarCapturas(dia);
+  }
+
+  function mostrarCapturas(dia) {
+    let lista = capturas[dia] || [];
+    let html = `<h3>Capturas Día ${dia}</h3>`;
+    lista.forEach((cap, idx) => {
+      html += `<p>${idx+1}. ${cap}</p>`;
+    });
+    document.getElementById("capturasGuardadas").innerHTML = html;
+  }
+
+  // Inicializar panel lateral
+  actualizarListaDias();
+<script>
+  // ============================
+  // PARTE 3: Guardado automático
+  // ============================
+
+  // Guardar operaciones y capturas en localStorage
+  function guardarDatos() {
+    localStorage.setItem("operaciones", JSON.stringify(dias));
+    localStorage.setItem("capturas", JSON.stringify(capturas));
+  }
+
+  // Cargar operaciones y capturas al iniciar
+  function cargarDatos() {
+    let opsGuardadas = localStorage.getItem("operaciones");
+    let capsGuardadas = localStorage.getItem("capturas");
+    if (opsGuardadas) dias = JSON.parse(opsGuardadas);
+    if (capsGuardadas) capturas = JSON.parse(capsGuardadas);
+
+    // Mostrar resúmenes si hay datos
+    mostrarResumenSemanal();
+    mostrarResumenMensual();
+    actualizarListaDias();
+  }
+
+  // Modificar funciones existentes para guardar automáticamente
+  function guardarOperacion() {
+    let dia = document.getElementById("dia").value;
+    if (!dias[dia]) dias[dia] = [];
+    dias[dia].push({
+      fecha: document.getElementById("fecha").value,
+      hora: document.getElementById("hora").value,
+      par: document.getElementById("par").value,
+      estrategia: document.getElementById("estrategia").value,
+      resultado: document.getElementById("resultado").value,
+      comentario: document.getElementById("comentario").value
+    });
+    mostrarResumenDiario(dia);
+    mostrarResumenSemanal();
+    mostrarResumenMensual();
+    guardarDatos(); // 🔥 Guardar en localStorage
+  }
+
+  function guardarCaptura() {
+    let dia = document.getElementById("diaCaptura").value;
+    let archivo = document.getElementById("archivoCaptura").files[0];
+    if (!archivo) {
+      alert("Selecciona una imagen primero");
+      return;
+    }
+    if (!capturas[dia]) capturas[dia] = [];
+    capturas[dia].push(archivo.name);
+    mostrarCapturas(dia);
+    guardarDatos(); // 🔥 Guardar en localStorage
+  }
+
+  // Ejecutar carga al abrir la página
+  window.onload = cargarDatos;
+<script>
+  // ============================
+  // PARTE 4: Exportar a CSV/TXT
+  // ============================
+
+  function exportarCSV() {
+    let filas = ["Dia,Fecha,Hora,Par,Estrategia,Resultado,Comentario"];
+    for (let dia in dias) {
+      dias[dia].forEach(op => {
+        filas.push(`${dia},${op.fecha},${op.hora},${op.par},${op.estrategia},${op.resultado},${op.comentario}`);
+      });
+    }
+    let contenido = filas.join("\n");
+    descargarArchivo(contenido, "diario_trading.csv", "text/csv");
+  }
+
+  function exportarTXT() {
+    let contenido = "📓 Diario de Trading Binarias\n\n";
+    for (let dia in dias) {
+      contenido += `Día ${dia}\n`;
+      dias[dia].forEach((op, idx) => {
+        contenido += `${idx+1}. Fecha: ${op.fecha} Hora: ${op.hora} Par: ${op.par} Estrategia: ${op.estrategia} Resultado: ${op.resultado} Comentario: ${op.comentario}\n`;
+      });
+      contenido += "\n";
+    }
+    descargarArchivo(contenido, "diario_trading.txt", "text/plain");
+  }
+
+  function descargarArchivo(contenido, nombreArchivo, tipo) {
+    let blob = new Blob([contenido], { type: tipo });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+<div class="panel">
+  <h2>📤 Exportar Diario</h2>
+  <button onclick="exportarCSV()">Exportar a CSV</button>
+  <button onclick="exportarTXT()">Exportar a TXT</button>
+</div>
+<style>
+  body {
+    background: linear-gradient(180deg, #0d0d0d, #1a1a1a);
+    color: #00ff99;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background-color: #111;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #00ccff;
+  }
+  header h1 {
+    color: #00ff99;
+    font-size: 28px;
+    margin: 0;
+  }
+  header h2 {
+    color: #00ccff;
+    font-size: 18px;
+    margin: 0;
+  }
+  .container {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+  }
+  .sidebar {
+    width: 220px;
+    background-color: #111;
+    border-right: 2px solid #00ccff;
+    padding: 15px;
+  }
+  .sidebar h2 {
+    color: #00ccff;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .sidebar button {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    background-color: #00ccff;
+    border: none;
+    padding: 8px;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .sidebar button:hover {
+    background-color: #0099cc;
+  }
+  .main {
+    flex: 1;
+    padding: 20px;
+  }
+  .panel {
+    border: 1px solid #00ff99;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    box-shadow: 0 0 10px #00ccff;
+  }
+  .panel h2 {
+    color: #00ccff;
+    margin-top: 0;
+  }
+  input, select, textarea {
+    background-color: #0d0d0d;
+    color: #00ff99;
+    border: 1px solid #00ccff;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 5px;
+    width: 100%;
+  }
+  button.action {
+    background-color: #00ff99;
+    color: #000;
+    font-weight: bold;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button.action:hover {
+    background-color: #00ccff;
+    color: #fff;
+  }
+  .resumen {
+    background-color: #111;
+    padding: 10px;
+    border-radius: 5px;
+  }
+</style>
+
+
