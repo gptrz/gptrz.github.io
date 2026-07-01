@@ -1,260 +1,654 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>BOT DE GESTIÓN MANUAL BINARIAS</title>
-  <style>
-    body {
-      background: linear-gradient(180deg, #0d0d0d, #1a1a1a);
-      color: #00ff99;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #111;
-      padding: 20px;
-      text-align: center;
-      border-bottom: 2px solid #00ccff;
-      box-shadow: 0 0 15px #00ccff;
-    }
-    header h1 {
-      color: #00ff99;
-      font-size: 28px;
-      margin: 0;
-      text-shadow: 0 0 10px #00ff99;
-    }
-    header h2 {
-      color: #00ccff;
-      font-size: 18px;
-      margin: 0;
-      text-shadow: 0 0 8px #00ccff;
-    }
-    .platform-buttons {
-      text-align: center;
-      margin: 15px;
-    }
-    .platform-buttons button {
-      background: #00ccff;
-      border: none;
-      padding: 10px 20px;
-      margin: 5px;
-      color: #fff;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 0 10px #00ccff;
-      transition: 0.3s;
-    }
-    .platform-buttons button:hover {
-      background: #0099cc;
-      box-shadow: 0 0 20px #00ff99;
-    }
-    .container {
-      padding: 20px;
-    }
-    .card {
-      background: #1a1a1a;
-      border: 1px solid #00ff99;
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 15px #00ccff;
-      transition: transform 0.2s;
-    }
-    .card:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 25px #00ff99;
-    }
-    .card h3 {
-      margin-top: 0;
-      color: #00ccff;
-      text-shadow: 0 0 8px #00ccff;
-    }
-    input, select, textarea {
-      background-color: #0d0d0d;
-      color: #00ff99;
-      border: 1px solid #00ccff;
-      padding: 8px;
-      margin: 5px 0;
-      border-radius: 6px;
-      width: 100%;
-      box-shadow: inset 0 0 5px #00ccff;
-    }
-    button.action {
-      background: #00ff99;
-      color: #000;
-      font-weight: bold;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 5px;
-      box-shadow: 0 0 10px #00ff99;
-      transition: 0.3s;
-    }
-    button.action:hover {
-      background: #00ccff;
-      color: #fff;
-      box-shadow: 0 0 20px #00ff99;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Bot de Gestión Manual Binarias</title>
+<style>
+  :root{
+    --bg-0:#050b16;
+    --bg-1:#081226;
+    --panel:#0a1730;
+    --panel-2:#0c1c3a;
+    --cyan:#22d3ee;
+    --cyan-soft:#7dd3fc;
+    --green:#22c55e;
+    --green-soft:#4ade80;
+    --red:#ef4444;
+    --text:#e7f6ff;
+    --text-dim:#9fb4cc;
+    --border:#1c355c;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,.5), transparent),
+      radial-gradient(1px 1px at 120px 80px, rgba(255,255,255,.4), transparent),
+      radial-gradient(1px 1px at 220px 160px, rgba(255,255,255,.35), transparent),
+      radial-gradient(1px 1px at 300px 40px, rgba(255,255,255,.3), transparent),
+      radial-gradient(1px 1px at 60px 220px, rgba(255,255,255,.3), transparent),
+      radial-gradient(ellipse at top, #0a1a33 0%, var(--bg-0) 60%);
+    background-size: 400px 400px, 400px 400px, 400px 400px, 400px 400px, 400px 400px, cover;
+    color:var(--text);
+    font-family: 'Segoe UI', 'Trebuchet MS', Arial, sans-serif;
+    min-height:100vh;
+    padding: 28px 16px 60px;
+  }
+  .wrap{ max-width: 1040px; margin: 0 auto; }
+
+  h1.title{
+    text-align:center;
+    color: var(--cyan);
+    font-size: clamp(22px, 4vw, 34px);
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(34,211,238,.55), 0 0 30px rgba(34,211,238,.25);
+    margin: 4px 0 6px;
+  }
+  h2.subtitle{
+    text-align:center;
+    font-size: clamp(16px,2.4vw,22px);
+    font-weight:700;
+    color:#fff;
+    margin: 0 0 20px;
+  }
+
+  .brokers{
+    display:flex; justify-content:center; gap:18px; margin-bottom: 22px; flex-wrap:wrap;
+  }
+  .broker-btn{
+    padding: 14px 34px;
+    border-radius: 10px;
+    font-weight:700;
+    font-size: 16px;
+    cursor:pointer;
+    background: rgba(10,20,40,.6);
+    transition: all .15s ease;
+    letter-spacing:.5px;
+  }
+  .broker-btn.exnova{
+    border: 2px solid var(--green);
+    color: var(--green-soft);
+    box-shadow: 0 0 14px rgba(34,197,94,.25);
+  }
+  .broker-btn.iq{
+    border: 2px solid var(--cyan);
+    color: var(--cyan-soft);
+    box-shadow: 0 0 14px rgba(34,211,238,.2);
+  }
+  .broker-btn.active{
+    background: rgba(34,211,238,.12);
+    box-shadow: 0 0 22px rgba(34,211,238,.55);
+  }
+  .broker-btn.exnova.active{
+    background: rgba(34,197,94,.14);
+    box-shadow: 0 0 22px rgba(34,197,94,.55);
+  }
+
+  hr.divider{
+    border:none;
+    height:2px;
+    margin: 6px 0 26px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--green), var(--cyan), transparent);
+    box-shadow: 0 0 12px rgba(34,211,238,.6);
+    opacity:.8;
+  }
+
+  .card{
+    background: linear-gradient(180deg, var(--panel), var(--bg-1));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 22px;
+    box-shadow: 0 0 0 1px rgba(34,211,238,.04) inset, 0 10px 40px rgba(0,0,0,.35);
+  }
+
+  .section-title{
+    text-align:center;
+    color: var(--cyan-soft);
+    font-weight:700;
+    font-size: 20px;
+    margin: 2px 0 18px;
+  }
+  .section-title .deco{ color:var(--cyan); opacity:.7; }
+
+  .day-row{
+    display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom: 4px;
+  }
+  .day-btn{
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: rgba(6,14,30,.7);
+    color: var(--text-dim);
+    font-weight:700;
+    cursor:pointer;
+    font-size:14px;
+  }
+  .day-btn:hover{ border-color: var(--cyan); color:var(--text); }
+  .day-btn.active{
+    border-color: var(--green);
+    color: var(--green-soft);
+    background: rgba(34,197,94,.1);
+    box-shadow: 0 0 14px rgba(34,197,94,.4);
+  }
+  .day-btn.show-all{
+    color: var(--cyan-soft);
+    border-color: var(--border);
+  }
+  .day-btn.add-day{
+    color: var(--green-soft);
+    border-style:dashed;
+  }
+
+  .op-card{
+    border: 1.5px solid var(--cyan);
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 22px;
+    box-shadow: 0 0 24px rgba(34,211,238,.28), inset 0 0 20px rgba(34,211,238,.04);
+    background: rgba(6,14,30,.35);
+  }
+  .op-header{
+    display:flex; align-items:center; gap:10px;
+    font-size: 19px;
+    font-weight:700;
+    color:#fff;
+    margin-bottom: 18px;
+    flex-wrap:wrap;
+  }
+  .op-header .broker-tag{ color: var(--green-soft); }
+  .op-header .pencil{ color: var(--green-soft); }
+
+  .grid2{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .grid2.two{ grid-template-columns: 1fr 1fr; }
+  @media (max-width: 720px){
+    .grid2{ grid-template-columns: 1fr; }
+    .grid2.two{ grid-template-columns: 1fr; }
+  }
+
+  label.field-label{
+    display:block;
+    color: var(--green-soft);
+    font-size: 13px;
+    font-weight:700;
+    margin-bottom: 6px;
+  }
+  .field select, .field input[type=text], .field input[type=date], .field input[type=time], textarea{
+    width:100%;
+    background: #0b1730;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    outline:none;
+  }
+  .field select:focus, .field input:focus, textarea:focus{
+    border-color: var(--cyan);
+    box-shadow: 0 0 8px rgba(34,211,238,.35);
+  }
+  textarea{ resize: vertical; min-height: 70px; font-family:inherit; }
+
+  .comment-row{
+    display:grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    align-items:flex-start;
+    margin-bottom: 14px;
+  }
+  @media (max-width:720px){ .comment-row{ grid-template-columns: 1fr; } }
+  .file-btn-wrap{
+    display:flex; gap:8px; align-items:center;
+  }
+  .file-btn{
+    background:#1c2947;
+    color:#fff;
+    border:1px solid var(--border);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .file-name{
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  .bottom-row{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;
+  }
+  .capture-toggle{
+    display:flex; align-items:center; gap:8px;
+    background: rgba(6,14,30,.7);
+    border:1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--cyan-soft);
+    font-weight:700;
+    cursor:pointer;
+    font-size:14px;
+  }
+
+  button.action{
+    border:none;
+    border-radius: 10px;
+    padding: 13px 22px;
+    font-weight:700;
+    font-size: 15px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:8px;
+    transition: transform .1s ease, filter .15s ease;
+  }
+  button.action:hover{ filter: brightness(1.12); transform: translateY(-1px); }
+  button.action:active{ transform: translateY(0); }
+
+  .btn-green{
+    background: linear-gradient(180deg,#22c55e,#16913f);
+    color:#fff;
+    box-shadow: 0 4px 18px rgba(34,197,94,.35);
+  }
+  .btn-red{
+    background: transparent;
+    border: 2px solid var(--red);
+    color: var(--red);
+  }
+  .btn-red:hover{ background: rgba(239,68,68,.1); }
+  .btn-outline-cyan{
+    background: transparent;
+    border: 2px solid var(--cyan);
+    color: var(--cyan-soft);
+  }
+  .btn-outline-cyan:hover{ background: rgba(34,211,238,.1); }
+  .btn-outline-green{
+    background: transparent;
+    border: 2px solid var(--green);
+    color: var(--green-soft);
+  }
+  .btn-outline-green:hover{ background: rgba(34,197,94,.1); }
+
+  .footer-actions{
+    display:flex; flex-wrap:wrap; gap: 14px; margin-top: 8px;
+  }
+  .footer-actions .grow{ flex:1; }
+  .new-op-row{ margin-top: 14px; display:flex; justify-content:flex-end; }
+
+  .history-panel{
+    display:none;
+    margin-top: 18px;
+    border-top: 1px dashed var(--border);
+    padding-top: 16px;
+  }
+  .history-panel.open{ display:block; }
+  table{
+    width:100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th,td{
+    text-align:left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    white-space:nowrap;
+  }
+  th{ color: var(--cyan-soft); }
+  td.win{ color: var(--green-soft); font-weight:700; }
+  td.loss{ color: var(--red); font-weight:700; }
+  .empty-hist{ color: var(--text-dim); text-align:center; padding: 20px 0; font-size:14px; }
+  .del-row{ color: var(--red); cursor:pointer; font-weight:700; }
+
+  .toast{
+    position:fixed; bottom: 24px; left:50%; transform: translateX(-50%);
+    background: #0c1c3a; border:1px solid var(--green); color:#fff;
+    padding: 12px 22px; border-radius: 10px; font-size:14px;
+    box-shadow: 0 0 20px rgba(34,197,94,.4);
+    opacity:0; pointer-events:none; transition: opacity .25s ease, transform .25s ease;
+  }
+  .toast.show{ opacity:1; transform: translateX(-50%) translateY(-6px); }
+</style>
 </head>
 <body>
-  <header>
-    <h1>BOT DE GESTIÓN MANUAL BINARIAS</h1>
-    <h2>Rolando Style 😎</h2>
-  </header>
+<div class="wrap">
 
-  <!-- Botones de plataforma -->
-  <div class="platform-buttons">
-    <button onclick="setPlataforma('Exnova')">Exnova</button>
-    <button onclick="setPlataforma('IQ Option')">IQ Option</button>
+  <h1 class="title">BOT DE GESTIÓN MANUAL BINARIAS</h1>
+  <h2 class="subtitle">Rolando Style 😎</h2>
+
+  <div class="brokers">
+    <button class="broker-btn exnova active" id="btnExnova" onclick="setBroker('Exnova')">EXNOVA</button>
+    <button class="broker-btn iq" id="btnIq" onclick="setBroker('IQ Option')">IQ OPTION</button>
   </div>
 
-  <!-- Navegación de días -->
-  <div class="platform-buttons">
-    <h2>📅 Seleccionar Día</h2>
-    <div id="listaDias"></div>
-    <button onclick="mostrarTodosDias()">Mostrar todo</button>
+  <hr class="divider">
+
+  <div class="card">
+    <div class="section-title"><span class="deco">•</span> Seleccionar Día <span class="deco">•</span></div>
+    <div class="day-row" id="dayRow"></div>
   </div>
 
-  <!-- Contenedor de operaciones -->
-  <div class="container" id="operacionesContainer"></div>
+  <div class="card">
+    <div class="op-card">
+      <div class="op-header">
+        <span class="pencil">✏️</span>
+        Operación <span id="opCount">1</span> - <span id="opDayLabel">Día 1</span>
+        (<span class="broker-tag" id="opBrokerLabel">Exnova</span>)
+      </div>
 
-  <!-- Botones de control -->
-  <div class="container">
-    <button class="action" onclick="guardarDia(diaActual)">Guardar Día</button>
-    <button class="action" onclick="borrarDia(diaActual)">Borrar Día</button>
-    <button class="action" onclick="verHistorial()">Ver Historial</button>
-    <button class="action" onclick="exportarCSV()">Exportar CSV</button>
-    <button class="action" onclick="nuevaOperacion(diaActual)">+ Nueva Operación</button>
+      <div class="grid2">
+        <div class="field">
+          <label class="field-label">Fecha:</label>
+          <input type="date" id="fFecha">
+        </div>
+        <div class="field">
+          <label class="field-label">Hora:</label>
+          <input type="time" id="fHora">
+        </div>
+        <div class="field">
+          <label class="field-label">Par:</label>
+          <select id="fPar">
+            <option>EUR/USD</option>
+            <option>GBP/USD</option>
+            <option>USD/JPY</option>
+            <option>AUD/USD</option>
+            <option>USD/CAD</option>
+            <option>EUR/JPY</option>
+            <option>EUR/GBP</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid2 two">
+        <div class="field">
+          <label class="field-label">Estrategia:</label>
+          <select id="fEstrategia">
+            <option>3 velas lateral</option>
+            <option>Soporte y resistencia</option>
+            <option>Ruptura de tendencia</option>
+            <option>Reversión</option>
+            <option>Martingala</option>
+            <option>Otra</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Sanitado:</label>
+          <select id="fSanitado">
+            <option>Ganancia</option>
+            <option>Pérdida</option>
+            <option>Empate</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid2 two">
+        <div class="field">
+          <label class="field-label">Señal:</label>
+          <select id="fSenial">
+            <option>CALL</option>
+            <option>PUT</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Resultado:</label>
+          <select id="fResultado">
+            <option>Ganancia</option>
+            <option>Pérdida</option>
+            <option>Empate</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="comment-row">
+        <div class="field">
+          <label class="field-label">Comentario:</label>
+          <textarea id="fComentario" placeholder="Comentario.."></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label">&nbsp;</label>
+          <div class="file-btn-wrap">
+            <button class="file-btn" type="button" onclick="document.getElementById('fArchivo').click()">Elegir archivo</button>
+            <span class="file-name" id="fileNameLabel">No seleccionado</span>
+            <input type="file" id="fArchivo" style="display:none" onchange="onFileChosen(this)">
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-row">
+        <div class="capture-toggle">
+          🖥️ Captura
+        </div>
+        <button class="action btn-green" onclick="guardarOperacion()">Guardar Operación</button>
+      </div>
+    </div>
   </div>
+
+  <div class="footer-actions">
+    <button class="action btn-outline-green" onclick="guardarDia()">🗂️ Guardar Día</button>
+    <button class="action btn-red" onclick="borrarDia()">■ Borrar Día</button>
+    <button class="action btn-outline-cyan" onclick="toggleHistorial()">🗂️ Ver Historial</button>
+    <button class="action btn-outline-cyan" onclick="exportarCSV()">⚡ Exportar CSV</button>
+  </div>
+
+  <div class="new-op-row">
+    <button class="action btn-green" onclick="nuevaOperacion()">+ Nueva Operación</button>
+  </div>
+
+  <div class="card history-panel" id="historyPanel">
+    <div class="section-title">Historial de Operaciones</div>
+    <div id="historyContent"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-  let plataforma = "Exnova";
-  let dias = {};
-  let diaActual = 1;
+  // ---------- Estado en memoria (no localStorage) ----------
+  let broker = 'Exnova';
+  let days = ['Día 1']; // lista de días creados
+  let currentDay = 'Día 1';
+  let opsInCurrentDay = 1; // contador visual del número de operación actual por día
+  let records = []; // { day, broker, fecha, hora, par, estrategia, sanitado, senial, resultado, comentario, archivo }
+  let chosenFile = null;
 
-  function setPlataforma(nombre) {
-    plataforma = nombre;
-    alert("Plataforma seleccionada: " + nombre);
+  function setBroker(b){
+    broker = b;
+    document.getElementById('btnExnova').classList.toggle('active', b === 'Exnova');
+    document.getElementById('btnIq').classList.toggle('active', b === 'IQ Option');
+    document.getElementById('opBrokerLabel').textContent = b;
   }
 
-  function nuevaOperacion(dia) {
-    if (!dias[dia]) dias[dia] = [];
-    let idx = dias[dia].length + 1;
-
-    let card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <h3>Operación ${idx} - Día ${dia} (${plataforma})</h3>
-      Fecha: <input type="date" id="fecha${dia}_${idx}"><br>
-      Hora: <input type="time" id="hora${dia}_${idx}"><br>
-      Par: <input type="text" id="par${dia}_${idx}" placeholder="EUR/USD"><br>
-      Estrategia: <input type="text" id="estrategia${dia}_${idx}" placeholder="3 velas lateral"><br>
-      Señal: <select id="senal${dia}_${idx}">
-        <option value="CALL">CALL</option>
-        <option value="PUT">PUT</option>
-      </select><br>
-      Resultado: <select id="resultado${dia}_${idx}">
-        <option value="G">Ganancia</option>
-        <option value="P">Pérdida</option>
-      </select><br>
-      Comentario: <textarea id="comentario${dia}_${idx}"></textarea><br>
-      Captura: <input type="file" id="captura${dia}_${idx}" accept="image/*"><br>
-      <button class="action" onclick="guardarOperacion(${dia}, ${idx})">Guardar Operación</button>
-    `;
-    document.getElementById("operacionesContainer").appendChild(card);
-  }
-
-  function guardarOperacion(dia, idx) {
-    if (!dias[dia]) dias[dia] = [];
-    dias[dia].push({
-      fecha: document.getElementById(`fecha${dia}_${idx}`).value,
-      hora: document.getElementById(`hora${dia}_${idx}`).value,
-      par: document.getElementById(`par${dia}_${idx}`).value,
-      estrategia: document.getElementById(`estrategia${dia}_${idx}`).value,
-      senal: document.getElementById(`senal${dia}_${idx}`).value,
-      resultado: document.getElementById(`resultado${dia}_${idx}`).value,
-      comentario: document.getElementById(`comentario${dia}_${idx}`).value,
-      captura: document.getElementById(`captura${dia}_${idx}`).files[0]?.name || "Sin captura",
-      plataforma: plataforma
+  function renderDays(){
+    const row = document.getElementById('dayRow');
+    row.innerHTML = '';
+    days.forEach(d => {
+      const btn = document.createElement('button');
+      btn.className = 'day-btn' + (d === currentDay ? ' active' : '');
+      btn.textContent = d;
+      btn.onclick = () => selectDay(d);
+      row.appendChild(btn);
     });
-    alert("Operación guardada en Día " + dia + " (" + plataforma + ")");
-  }
-  // ============================
-  // PARTE 3: Control de días
-  // ============================
+    const showAll = document.createElement('button');
+    showAll.className = 'day-btn show-all';
+    showAll.textContent = 'Mostrar todo';
+    showAll.onclick = () => { toggleHistorial(true); };
+    row.appendChild(showAll);
 
-  function actualizarListaDias() {
-    let html = "";
-    for (let i=1; i<=9; i++) {
-      html += `<button onclick="cargarDia(${i})">Día ${i}</button>`;
+    const addDay = document.createElement('button');
+    addDay.className = 'day-btn add-day';
+    addDay.textContent = '+ Día';
+    addDay.onclick = agregarDia;
+    row.appendChild(addDay);
+  }
+
+  function selectDay(d){
+    currentDay = d;
+    opsInCurrentDay = records.filter(r => r.day === d).length + 1;
+    document.getElementById('opDayLabel').textContent = d;
+    document.getElementById('opCount').textContent = opsInCurrentDay;
+    renderDays();
+  }
+
+  function agregarDia(){
+    const n = days.length + 1;
+    const nombre = 'Día ' + n;
+    days.push(nombre);
+    selectDay(nombre);
+    showToast('Día agregado: ' + nombre);
+  }
+
+  function nuevaOperacion(){
+    opsInCurrentDay = records.filter(r => r.day === currentDay).length + 1;
+    document.getElementById('opCount').textContent = opsInCurrentDay;
+    clearForm();
+    showToast('Nueva operación lista para completar');
+  }
+
+  function clearForm(){
+    document.getElementById('fFecha').value = '';
+    document.getElementById('fHora').value = '';
+    document.getElementById('fPar').selectedIndex = 0;
+    document.getElementById('fEstrategia').selectedIndex = 0;
+    document.getElementById('fSanitado').selectedIndex = 0;
+    document.getElementById('fSenial').selectedIndex = 0;
+    document.getElementById('fResultado').selectedIndex = 0;
+    document.getElementById('fComentario').value = '';
+    document.getElementById('fArchivo').value = '';
+    document.getElementById('fileNameLabel').textContent = 'No seleccionado';
+    chosenFile = null;
+  }
+
+  function onFileChosen(input){
+    chosenFile = input.files[0] ? input.files[0].name : null;
+    document.getElementById('fileNameLabel').textContent = chosenFile || 'No seleccionado';
+  }
+
+  function guardarOperacion(){
+    const rec = {
+      day: currentDay,
+      broker: broker,
+      opNum: opsInCurrentDay,
+      fecha: document.getElementById('fFecha').value || '-',
+      hora: document.getElementById('fHora').value || '-',
+      par: document.getElementById('fPar').value,
+      estrategia: document.getElementById('fEstrategia').value,
+      sanitado: document.getElementById('fSanitado').value,
+      senial: document.getElementById('fSenial').value,
+      resultado: document.getElementById('fResultado').value,
+      comentario: document.getElementById('fComentario').value,
+      archivo: chosenFile || '-'
+    };
+    records.push(rec);
+    showToast('Operación guardada ✔');
+    nuevaOperacion();
+    renderHistory();
+  }
+
+  function guardarDia(){
+    const count = records.filter(r => r.day === currentDay).length;
+    if(count === 0){
+      showToast('No hay operaciones guardadas en ' + currentDay);
+      return;
     }
-    document.getElementById("listaDias").innerHTML = html;
+    showToast(currentDay + ' guardado (' + count + ' operaciones)');
   }
 
-  function mostrarTodosDias() {
-    let html = "";
-    for (let i=1; i<=30; i++) {
-      html += `<button onclick="cargarDia(${i})">Día ${i}</button>`;
+  function borrarDia(){
+    const before = records.length;
+    records = records.filter(r => r.day !== currentDay);
+    const removed = before - records.length;
+    opsInCurrentDay = 1;
+    document.getElementById('opCount').textContent = 1;
+    clearForm();
+    renderHistory();
+    showToast(removed > 0 ? (currentDay + ' borrado (' + removed + ' operaciones eliminadas)') : (currentDay + ' no tenía operaciones'));
+  }
+
+  function toggleHistorial(forceOpen){
+    const panel = document.getElementById('historyPanel');
+    if(forceOpen){ panel.classList.add('open'); }
+    else { panel.classList.toggle('open'); }
+    if(panel.classList.contains('open')) renderHistory();
+  }
+
+  function renderHistory(){
+    const el = document.getElementById('historyContent');
+    if(records.length === 0){
+      el.innerHTML = '<div class="empty-hist">Aún no hay operaciones guardadas.</div>';
+      return;
     }
-    document.getElementById("listaDias").innerHTML = html;
+    let rows = records.map((r, i) => {
+      const cls = r.resultado === 'Ganancia' ? 'win' : (r.resultado === 'Pérdida' ? 'loss' : '');
+      return `<tr>
+        <td>${r.day}</td>
+        <td>${r.broker}</td>
+        <td>${r.opNum}</td>
+        <td>${r.fecha}</td>
+        <td>${r.hora}</td>
+        <td>${r.par}</td>
+        <td>${r.estrategia}</td>
+        <td>${r.senial}</td>
+        <td class="${cls}">${r.resultado}</td>
+        <td>${r.comentario || '-'}</td>
+        <td class="del-row" onclick="borrarOperacion(${i})">Borrar</td>
+      </tr>`;
+    }).join('');
+    el.innerHTML = `<table>
+      <thead><tr>
+        <th>Día</th><th>Broker</th><th>#</th><th>Fecha</th><th>Hora</th><th>Par</th>
+        <th>Estrategia</th><th>Señal</th><th>Resultado</th><th>Comentario</th><th></th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
   }
 
-  function cargarDia(dia) {
-    diaActual = dia;
-    document.getElementById("operacionesContainer").innerHTML = "";
-    if (!dias[dia]) dias[dia] = [];
-    nuevaOperacion(dia); // siempre arranca con una sola operación
-    alert("Día " + dia + " cargado.");
+  function borrarOperacion(idx){
+    records.splice(idx, 1);
+    renderHistory();
+    showToast('Operación eliminada');
   }
 
-  function guardarDia(dia) {
-    localStorage.setItem("dia_" + dia, JSON.stringify(dias[dia]));
-    alert("Día " + dia + " guardado correctamente.");
-  }
-
-  function borrarDia(dia) {
-    delete dias[dia];
-    localStorage.removeItem("dia_" + dia);
-    document.getElementById("operacionesContainer").innerHTML = "";
-    alert("Día " + dia + " borrado.");
-  }
-
-  function verHistorial() {
-    let historial = "";
-    for (let dia in dias) {
-      historial += "📅 Día " + dia + "\n";
-      dias[dia].forEach((op, idx) => {
-        historial += `${idx+1}. ${op.fecha} ${op.hora} ${op.par} ${op.estrategia} ${op.senal} ${op.resultado} (${op.plataforma})\nComentario: ${op.comentario}\nCaptura: ${op.captura}\n\n`;
-      });
+  function exportarCSV(){
+    if(records.length === 0){
+      showToast('No hay operaciones para exportar');
+      return;
     }
-    alert(historial || "No hay historial registrado.");
-  }
-  // ============================
-  // PARTE 4: Exportación
-  // ============================
-
-  function exportarCSV() {
-    let filas = ["Dia,Fecha,Hora,Par,Estrategia,Señal,Resultado,Comentario,Captura,Plataforma"];
-    for (let dia in dias) {
-      dias[dia].forEach(op => {
-        filas.push(`${dia},${op.fecha},${op.hora},${op.par},${op.estrategia},${op.senal},${op.resultado},${op.comentario},${op.captura},${op.plataforma}`);
-      });
-    }
-    let contenido = filas.join("\n");
-    let blob = new Blob([contenido], { type: "text/csv" });
-    let url = URL.createObjectURL(blob);
-    let a = document.createElement("a");
+    const headers = ['Dia','Broker','Numero','Fecha','Hora','Par','Estrategia','Sanitado','Senial','Resultado','Comentario','Archivo'];
+    const lines = [headers.join(',')];
+    records.forEach(r => {
+      const row = [r.day, r.broker, r.opNum, r.fecha, r.hora, r.par, r.estrategia, r.sanitado, r.senial, r.resultado, '"'+(r.comentario||'').replace(/"/g,'""')+'"', r.archivo];
+      lines.push(row.join(','));
+    });
+    const csv = lines.join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
     a.href = url;
-    a.download = "diario_trading.csv";
+    a.download = 'operaciones_binarias.csv';
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    showToast('CSV exportado ✔');
   }
 
-  // Inicializar lista de días al abrir la página
-  window.onload = actualizarListaDias;
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  // init
+  renderDays();
+  document.getElementById('opDayLabel').textContent = currentDay;
+  document.getElementById('opCount').textContent = opsInCurrentDay;
+  renderHistory();
 </script>
 </body>
 </html>
